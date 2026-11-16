@@ -563,7 +563,18 @@
                         this.changed();
                         return;
                     }
+                    // At the boundary after a table there is no paragraph yet.
+                    // Creating that first typing paragraph already fulfils Enter.
+                    const boundary = range?.collapsed && range.startContainer.nodeType === 1
+                        ? range.startContainer.childNodes[range.startOffset - 1] : null;
+                    const afterTable = boundary?.nodeName === 'TABLE' ||
+                        (boundary?.nodeName === 'FIGURE' && boundary.querySelector('table'));
                     this.ensureTypingParagraph();
+                    if (afterTable) {
+                        event.preventDefault();
+                        this.changed();
+                        return;
+                    }
                     if (this.insertParagraphAtCursor()) {
                         event.preventDefault();
                         return;
