@@ -202,26 +202,19 @@
             paddingLabel.appendChild(padding);
             const paddingHelp = document.createElement('small');
             paddingHelp.textContent = '8 = all sides · 8 12 = vertical / horizontal · 8 12 16 20 = top / right / bottom / left';
-            const paddingScope = document.createElement('select');
-            paddingScope.setAttribute('aria-label', 'Padding applies to');
-            [['selected', 'Selected cells'], ['table', 'Whole table']].forEach(([value, label]) => {
-                const option = document.createElement('option');
-                option.value = value;
-                option.textContent = label;
-                paddingScope.appendChild(option);
-            });
             const applyPadding = document.createElement('button');
             applyPadding.type = 'button';
             applyPadding.title = 'Apply cell padding';
             applyPadding.setAttribute('aria-label', 'Apply cell padding');
             applyPadding.textContent = 'Apply padding';
-            const commitPadding = () => this.applyTablePadding(padding.value, paddingScope.value);
+            const commitPadding = () => this.applyTablePadding(padding.value);
             applyPadding.addEventListener('click', commitPadding);
+            padding.addEventListener('change', commitPadding);
             padding.addEventListener('keydown', event => {
                 if (event.key === 'Enter') { event.preventDefault(); commitPadding(); }
             });
             this.tablePaddingInput = padding;
-            [paddingLabel, paddingHelp, paddingScope, applyPadding].forEach(control => paddingBody.appendChild(control));
+            [paddingLabel, paddingHelp, applyPadding].forEach(control => paddingBody.appendChild(control));
             paddingPanel.append(paddingSummary, paddingBody);
             this.tableTools.appendChild(paddingPanel);
             this.borderControls = {style: borderStyle, color: borderColor, width: borderWidth};
@@ -1947,7 +1940,8 @@ showLinkDialog() {
             }
             const paddingValue = parts.map(part => parseFloat(part) + 'px').join(' ');
             const table = this.activeCell.closest('table');
-            const cells = scope === 'table' ? table.querySelectorAll('td,th') : table.querySelectorAll('.selected-cell');
+            const selected = table.querySelectorAll('.selected-cell');
+            const cells = scope === 'table' ? table.querySelectorAll('td,th') : (selected.length ? selected : [this.activeCell]);
             Array.from(cells).filter(cell => cell.closest('table') === table).forEach(cell => {
                 cell.style.padding = paddingValue;
             });
