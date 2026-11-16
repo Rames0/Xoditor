@@ -186,12 +186,9 @@
             };
             this.tableTools.appendChild(vertical);
             const padding = document.createElement('input');
-            padding.type = 'number';
-            padding.min = '0';
-            padding.max = '200';
-            padding.step = '1';
-            padding.placeholder = 'Mixed';
-            padding.title = 'Cell padding in pixels';
+            padding.type = 'text';
+            padding.placeholder = '8 12 16 20';
+            padding.title = 'Padding in pixels: all sides; vertical horizontal; or top right bottom left';
             padding.setAttribute('aria-label', 'Cell padding in pixels');
             const paddingScope = document.createElement('select');
             paddingScope.setAttribute('aria-label', 'Padding applies to');
@@ -1929,15 +1926,16 @@ showLinkDialog() {
 
         applyTablePadding(value, scope = 'selected') {
             if (this.readOnly || this.htmlMode || !this.activeCell?.isConnected || String(value).trim() === '') return;
-            const amount = Number(value);
-            if (!Number.isFinite(amount) || amount < 0 || amount > 200) {
-                this.notify('Enter cell padding between 0 and 200 pixels.');
+            const parts = String(value).trim().split(/\s+/);
+            if (parts.length > 4 || parts.some(part => !/^(?:\d+(?:\.\d+)?|\.\d+)(?:px)?$/i.test(part) || parseFloat(part) > 200)) {
+                this.notify('Enter 1–4 padding values from 0 to 200 pixels, for example: 8 12 or 8 12 16 20.');
                 return;
             }
+            const paddingValue = parts.map(part => parseFloat(part) + 'px').join(' ');
             const table = this.activeCell.closest('table');
             const cells = scope === 'table' ? table.querySelectorAll('td,th') : table.querySelectorAll('.selected-cell');
             Array.from(cells).filter(cell => cell.closest('table') === table).forEach(cell => {
-                cell.style.padding = amount + 'px';
+                cell.style.padding = paddingValue;
             });
             this.changed();
         },
@@ -1980,7 +1978,8 @@ showLinkDialog() {
             if (this.tablePaddingInput) {
                 const style = getComputedStyle(cell);
                 const values = [style.paddingTop, style.paddingRight, style.paddingBottom, style.paddingLeft];
-                this.tablePaddingInput.value = values.every(value => value === values[0]) ? parseFloat(values[0]) : '';
+                this.tablePaddingInput.value = values.every(value => value === values[0])
+                    ? String(parseFloat(values[0])) : values.map(value => parseFloat(value)).join(' ');
             }
             this.updateTableGuides();
         },
