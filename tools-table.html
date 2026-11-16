@@ -3,30 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>xoditor - All Tools & Features</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 20px auto; padding: 20px; }
-        h1 { color: #333; text-align: center; }
-        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #f2f2f2; font-weight: bold; }
-        tr:nth-child(even) { background-color: #f9f9f9; }
-        .icon { font-size: 18px; text-align: center; }
-        .category { background-color: #e3f2fd !important; font-weight: bold; }
-        code { background: #f5f5f5; padding: 2px 4px; border-radius: 3px; }
-    </style>
+    <title>Tools & table workspace — Xoditor</title>
+    <meta name="description" content="Explore Xoditor’s formatting commands, fonts and table tools in a live workspace.">
+    <link rel="icon" href="site/mark.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="fonts/fonts.css">
+
     <link rel="stylesheet" href="dist/xoditor.min.css">
+    <link rel="stylesheet" href="site/site.css">
+    <link rel="stylesheet" href="site/tools.css">
 </head>
-<body>
-    <h1>xoditor - Complete Tools & Features Reference</h1>
+<body class="tools-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header"><a class="brand" href="index.html"><img src="site/mark.svg" width="32" height="32" alt="">xoditor<span> / </span></a><nav aria-label="Main navigation"><a href="index.html#playground">Playground</a><a href="index.html#features">Features</a><a href="index.html#developers">Developers</a><a href="index.html#docs">Documentation</a><a href="https://github.com/Rames0/Xoditor" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav><details class="download-menu"><summary class="nav-cta">Get the editor <span aria-hidden="true">↓</span></summary><div class="download-options"><a href="dist/xoditor.min.js" target="_blank" rel="noopener noreferrer">View JavaScript <small>xoditor.min.js</small></a><a href="dist/xoditor.min.css" target="_blank" rel="noopener noreferrer">View stylesheet <small>xoditor.min.css</small></a><a href="LICENSE" target="_blank" rel="noopener noreferrer">MIT license</a></div></details></header>
+<main id="main" class="wrap tools-main">
+    <div class="tools-heading"><span class="eyebrow">THE FIELD GUIDE / TOOLS & TABLES</span><h1>A place for every detail.</h1><p>Get to know the tools, shape a table, and find the right command for your next document.</p><div class="tools-jump"><a href="#workspace">Live workspace ↓</a><a href="#commands">Tool reference ↓</a><a href="#fonts">Font reference ↓</a></div></div>
     
-    <section aria-label="Word-style ribbon preview">
-        <h2>Word-style ribbon preview</h2>
+    <section id="workspace" class="tools-workspace" aria-label="Live editor workspace">
+        <span class="eyebrow">01 / TRY THE TOOLS</span><h2>Make the details work.</h2>
         <p>Choose a tab to see its tools. Home contains Font, Paragraph, and Editing groups. Table controls appear when you select a cell.</p>
-        <textarea id="ribbon-preview"><p>Try the ribbon: select this text to change its font, size, or alignment.</p><p>Use Insert for tables and images, and Layout for page settings.</p></textarea>
+        <div class="demo-shell"><textarea id="ribbon-preview"><p>Try the ribbon: select this text to change its font, size, or alignment.</p><p>Click a cell below to explore table tools. Use Insert for images and Layout for page settings.</p><table style="width:100%;border-collapse:collapse;"><tbody><tr><td style="width:50%;border:1px solid #9aaa8b;padding:10px;">Project</td><td style="width:50%;border:1px solid #9aaa8b;padding:10px;">Next step</td></tr><tr><td style="border:1px solid #9aaa8b;padding:10px;">Your document</td><td style="border:1px solid #9aaa8b;padding:10px;">Make it your own</td></tr></tbody></table></textarea></div>
     </section>
-    <h2>📋 All Available Tools</h2>
-    <table>
+    <h2 id="commands">The tool reference</h2>
+    <div class="reference-scroll"><table class="reference-table">
         <thead>
             <tr>
                 <th>Tool Name</th>
@@ -38,7 +36,7 @@
         </thead>
         <tbody>
             <tr class="category">
-                <td colspan="5">📝 TEXT FORMATTING</td>
+                <td colspan="5">TEXT FORMATTING</td>
             </tr>
             <tr>
                 <td><code>bold</code></td>
@@ -84,7 +82,7 @@
             </tr>
             
             <tr class="category">
-                <td colspan="5">🎨 COLORS & FONTS</td>
+                <td colspan="5">COLORS & FONTS</td>
             </tr>
             <tr>
                 <td><code>fontName</code></td>
@@ -97,7 +95,7 @@
                 <td><code>fontSize</code></td>
                 <td class="icon">🔤</td>
                 <td>fontSize</td>
-                <td>Change font size (1-7)</td>
+                <td>Change font size in pixels</td>
                 <td>Select from dropdown</td>
             </tr>
             <tr>
@@ -116,7 +114,7 @@
             </tr>
             
             <tr class="category">
-                <td colspan="5">📐 ALIGNMENT</td>
+                <td colspan="5">ALIGNMENT</td>
             </tr>
             <tr>
                 <td><code>justifyLeft</code></td>
@@ -148,7 +146,7 @@
             </tr>
             
             <tr class="category">
-                <td colspan="5">📋 LISTS & INDENTATION</td>
+                <td colspan="5">LISTS & INDENTATION</td>
             </tr>
             <tr>
                 <td><code>insertOrderedList</code></td>
@@ -180,7 +178,7 @@
             </tr>
             
             <tr class="category">
-                <td colspan="5">🔗 LINKS & MEDIA</td>
+                <td colspan="5">LINKS & MEDIA</td>
             </tr>
             <tr>
                 <td><code>link</code></td>
@@ -205,7 +203,7 @@
             </tr>
             
             <tr class="category">
-                <td colspan="5">📊 TABLES & ELEMENTS</td>
+                <td colspan="5">TABLES & ELEMENTS</td>
             </tr>
             <tr>
                 <td><code>table</code></td>
@@ -223,7 +221,7 @@
             </tr>
             
             <tr class="category">
-                <td colspan="5">🔧 UTILITIES</td>
+                <td colspan="5">UTILITIES</td>
             </tr>
             <tr>
                 <td><code>removeFormat</code></td>
@@ -261,10 +259,10 @@
                 <td>Click or Ctrl+P</td>
             </tr>
         </tbody>
-    </table>
+    </table></div>
     
-    <h2>🔤 Available Fonts</h2>
-    <table>
+    <h2 id="fonts">Find your type.</h2><p class="reference-note">System fonts depend on the fonts installed on your device. Bundled Nepali fonts are available in the editor’s font menu.</p>
+    <div class="reference-scroll"><table class="reference-table">
         <thead>
             <tr>
                 <th>Font Name</th>
@@ -287,9 +285,9 @@
             <tr><td>Arial Black</td><td style="font-family: 'Arial Black';">The quick brown fox jumps over the lazy dog</td><td>Sans-serif Bold</td></tr>
             <tr><td>Impact</td><td style="font-family: Impact;">The quick brown fox jumps over the lazy dog</td><td>Sans-serif Condensed</td></tr>
         </tbody>
-    </table>
+    </table></div>
     
-    <h2>⚙️ Configuration Example</h2>
+    <h2 id="configuration">Put it in your application.</h2>
     <pre><code>const editor = new Xoditor('#editor', {
     height: '400px',
     placeholder: 'Start typing...',
@@ -305,7 +303,8 @@
     ],
     fonts: ['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana']
 });</code></pre>
+</main><footer class="site-footer wrap"><a class="brand" href="index.html">xoditor /</a><p>A rich text editor by Ramesh Maharjan.</p><a href="https://github.com/Rames0/Xoditor" target="_blank" rel="noopener noreferrer">GitHub ↗</a><a href="https://rameshmaharjan.info.np">rameshmaharjan.info.np ↗</a></footer>
 <script src="dist/xoditor.min.js"></script>
-<script>window.ribbonPreview = new Xoditor('#ribbon-preview', {autoSave:false, height:'320px'});</script>
+<script>window.ribbonPreview = new Xoditor('#ribbon-preview', {autoSave:false, height:'400px', defaultFont:'Arial', stickyToolbar:false, ribbon:true});</script>
 </body>
 </html>
