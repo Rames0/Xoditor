@@ -5,8 +5,7 @@ A project-focused rich text editor built for HTML letters and tables. This provi
 ## Use
 
 Load `dist/xoditor.min.css` and `dist/xoditor.min.js`. For standalone use, load `fonts/fonts.css` for the bundled fonts.
-GWP uses its existing `css/font-face-inclulde.css` and shared `js/fonts`; deployment copies only JS/CSS assets. The existing
-toolbar uses Font Awesome icons; GWP already loads Font Awesome.
+Deployment copies only JS/CSS assets. The existing toolbar uses Font Awesome icons.
 
 ```html
 <textarea id="document"></textarea>
@@ -88,7 +87,7 @@ fixed header. The View tab's Sticky toolbar button toggles this behavior, and
 `editor.setStickyToolbar(true)` enables it programmatically.
 
 Autosave, when enabled, uses a key based on the page URL and textarea ID. Supply
-`autosaveKey` for a document-specific key. GWP's adapter disables local autosave.
+`autosaveKey` for a document-specific key.
 
 ## Build and test
 
@@ -97,12 +96,12 @@ npm install
 npm run build
 npx playwright install chromium
 npm test
-npm run deploy:gwp
+npm run deploy
 npx playwright install firefox
 npm run verify
 ```
 
-`deploy:gwp` rebuilds and copies distributable JS/CSS files into the GWP frontend.
+`deploy` rebuilds and copies distributable JS/CSS files into
 `verify` rebuilds/deploys, checks package syntax and deployed asset hashes, and
 runs Chromium/Firefox against source and minified JS/CSS. `test:all` runs just
 the browser matrix; `test:dist` runs the built variant in both browsers.
