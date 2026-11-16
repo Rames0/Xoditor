@@ -185,11 +185,23 @@
                 this.changed();
             };
             this.tableTools.appendChild(vertical);
+            const paddingPanel = document.createElement('details');
+            paddingPanel.className = 'table-padding-panel';
+            const paddingSummary = document.createElement('summary');
+            paddingSummary.textContent = 'Cell padding';
+            paddingSummary.title = 'Set spacing inside table cells';
+            const paddingBody = document.createElement('div');
+            paddingBody.className = 'table-padding-body';
+            const paddingLabel = document.createElement('label');
+            paddingLabel.textContent = 'Custom padding (px)';
             const padding = document.createElement('input');
             padding.type = 'text';
             padding.placeholder = '8 12 16 20';
             padding.title = 'Padding in pixels: all sides; vertical horizontal; or top right bottom left';
             padding.setAttribute('aria-label', 'Cell padding in pixels');
+            paddingLabel.appendChild(padding);
+            const paddingHelp = document.createElement('small');
+            paddingHelp.textContent = '8 = all sides · 8 12 = vertical / horizontal · 8 12 16 20 = top / right / bottom / left';
             const paddingScope = document.createElement('select');
             paddingScope.setAttribute('aria-label', 'Padding applies to');
             [['selected', 'Selected cells'], ['table', 'Whole table']].forEach(([value, label]) => {
@@ -202,14 +214,16 @@
             applyPadding.type = 'button';
             applyPadding.title = 'Apply cell padding';
             applyPadding.setAttribute('aria-label', 'Apply cell padding');
-            applyPadding.textContent = 'Padding (px)';
+            applyPadding.textContent = 'Apply padding';
             const commitPadding = () => this.applyTablePadding(padding.value, paddingScope.value);
             applyPadding.addEventListener('click', commitPadding);
             padding.addEventListener('keydown', event => {
                 if (event.key === 'Enter') { event.preventDefault(); commitPadding(); }
             });
             this.tablePaddingInput = padding;
-            [padding, paddingScope, applyPadding].forEach(control => this.tableTools.appendChild(control));
+            [paddingLabel, paddingHelp, paddingScope, applyPadding].forEach(control => paddingBody.appendChild(control));
+            paddingPanel.append(paddingSummary, paddingBody);
+            this.tableTools.appendChild(paddingPanel);
             this.borderControls = {style: borderStyle, color: borderColor, width: borderWidth};
             ['outside', 'inside', 'top', 'right', 'bottom', 'left'].forEach(side => {
                 const button = document.createElement('button');

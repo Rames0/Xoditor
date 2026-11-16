@@ -543,3 +543,12 @@
 .xoditor .custom-find-dialog input[data-field="find"],
 .xoditor .custom-find-dialog input[data-field="replace"] { display:block; width:220px; max-width:100%; min-width:100px; height:32px; padding:5px 8px; border:1px solid #bbc5cf; border-radius:4px; background:#fff; color:#222; box-sizing:border-box; }
 .xoditor.html-mode .custom-find-dialog { display:flex; }
+
+/* Table padding is a labeled panel rather than an ambiguous numeric box. */
+.xoditor .table-padding-panel { position:relative; font:12px Arial,sans-serif; }
+.xoditor .table-padding-panel > summary { cursor:pointer; padding:7px 10px; border:1px solid #ccd2d9; border-radius:4px; background:#fff; white-space:nowrap; }
+.xoditor .table-padding-body { position:absolute; top:100%; left:0; z-index:250; width:280px; max-width:calc(100vw - 40px); padding:14px; background:#fff; color:#26332c; border:1px solid #ccd2d9; border-radius:6px; box-shadow:0 8px 24px #0002; display:flex; flex-direction:column; gap:10px; }
+.xoditor .table-padding-body label { display:flex; flex-direction:column; gap:6px; font-weight:600; }
+.xoditor .table-padding-body input { width:100%!important; min-width:0; height:34px; padding:6px 8px; font:14px Arial,sans-serif; }
+.xoditor .table-padding-body small { font-size:11px; line-height:1.7; white-space:normal; }
+.xoditor .table-padding-body select { width:100%; }
