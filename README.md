@@ -1,8 +1,6 @@
 # xoditor
 
-A project-focused rich text editor for existing GWP HTML letters and tables. The
-Darta Details page currently uses this editor; other pages keep their existing
-editor. This is a local integration, with no TinyMCE runtime or subscription.
+A project-focused rich text editor built for HTML letters and tables. This provides a fully local solution with no external runtime or subscription dependencies.
 
 ## Use
 
@@ -88,16 +86,6 @@ Enable `stickyToolbar: true` to keep the toolbar visible while scrolling within
 the editor's page area. Set `stickyToolbarOffset` in pixels when the page has a
 fixed header. The View tab's Sticky toolbar button toggles this behavior, and
 `editor.setStickyToolbar(true)` enables it programmatically.
-
-Textareas receive updated HTML and are restored when the editor is destroyed.
-`gwp_front/js/xoditor.js` preserves the `.value`, `getEditorValue()`,
-`setEditorValue()`, `.editor`, `setReadOnly()` and `destroy()` interface used by
-Darta's existing scripts and dynamically opened official-details modal.
-
-Optional `uploadImage(file)` must return a Promise resolving to an image URL.
-Without it, raster images are embedded as data URLs. The default image limit is
-10 MB and can be changed with `maxImageBytes`. This hook does not change the
-separate Darta form's fingerprint/MinIO upload implementation.
 
 Autosave, when enabled, uses a key based on the page URL and textarea ID. Supply
 `autosaveKey` for a document-specific key. GWP's adapter disables local autosave.
