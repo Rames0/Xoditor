@@ -185,6 +185,34 @@
                 this.changed();
             };
             this.tableTools.appendChild(vertical);
+            const padding = document.createElement('input');
+            padding.type = 'number';
+            padding.min = '0';
+            padding.max = '200';
+            padding.step = '1';
+            padding.placeholder = 'Mixed';
+            padding.title = 'Cell padding in pixels';
+            padding.setAttribute('aria-label', 'Cell padding in pixels');
+            const paddingScope = document.createElement('select');
+            paddingScope.setAttribute('aria-label', 'Padding applies to');
+            [['selected', 'Selected cells'], ['table', 'Whole table']].forEach(([value, label]) => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = label;
+                paddingScope.appendChild(option);
+            });
+            const applyPadding = document.createElement('button');
+            applyPadding.type = 'button';
+            applyPadding.title = 'Apply cell padding';
+            applyPadding.setAttribute('aria-label', 'Apply cell padding');
+            applyPadding.textContent = 'Padding (px)';
+            const commitPadding = () => this.applyTablePadding(padding.value, paddingScope.value);
+            applyPadding.addEventListener('click', commitPadding);
+            padding.addEventListener('keydown', event => {
+                if (event.key === 'Enter') { event.preventDefault(); commitPadding(); }
+            });
+            this.tablePaddingInput = padding;
+            [padding, paddingScope, applyPadding].forEach(control => this.tableTools.appendChild(control));
             this.borderControls = {style: borderStyle, color: borderColor, width: borderWidth};
             ['outside', 'inside', 'top', 'right', 'bottom', 'left'].forEach(side => {
                 const button = document.createElement('button');
@@ -1899,6 +1927,21 @@ showLinkDialog() {
         enhanceWordTables() {
         },
 
+        applyTablePadding(value, scope = 'selected') {
+            if (this.readOnly || this.htmlMode || !this.activeCell?.isConnected || String(value).trim() === '') return;
+            const amount = Number(value);
+            if (!Number.isFinite(amount) || amount < 0 || amount > 200) {
+                this.notify('Enter cell padding between 0 and 200 pixels.');
+                return;
+            }
+            const table = this.activeCell.closest('table');
+            const cells = scope === 'table' ? table.querySelectorAll('td,th') : table.querySelectorAll('.selected-cell');
+            Array.from(cells).filter(cell => cell.closest('table') === table).forEach(cell => {
+                cell.style.padding = amount + 'px';
+            });
+            this.changed();
+        },
+
         selectCell(cell, extend) {
             if (cell && !this.editor.contains(cell)) return;
             const anchor = extend ? this.activeCell : null;
@@ -1934,6 +1977,11 @@ showLinkDialog() {
                 cell.classList.add('selected-cell');
             }
             this.tableTools.hidden = false;
+            if (this.tablePaddingInput) {
+                const style = getComputedStyle(cell);
+                const values = [style.paddingTop, style.paddingRight, style.paddingBottom, style.paddingLeft];
+                this.tablePaddingInput.value = values.every(value => value === values[0]) ? parseFloat(values[0]) : '';
+            }
             this.updateTableGuides();
         },
 
