@@ -3,5 +3,29 @@
     "framework": null,
     "installCommand": "npm ci --include=dev",
     "buildCommand": "npm run build:site",
-    "outputDirectory": "public"
+    "outputDirectory": "public",
+    "headers": [
+        {
+            "source": "/LICENSE",
+            "headers": [
+                {
+                    "key": "Content-Type",
+                    "value": "text/plain; charset=utf-8"
+                },
+                {
+                    "key": "Content-Disposition",
+                    "value": "inline"
+                }
+            ]
+        },
+        {
+            "source": "/dist/:file*",
+            "headers": [
+                {
+                    "key": "Content-Disposition",
+                    "value": "inline"
+                }
+            ]
+        }
+    ]
 }
