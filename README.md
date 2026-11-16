@@ -144,6 +144,3 @@ The current formatting commands rely partly on the browser's legacy
 `execCommand` implementation. Chromium and Firefox regression checks passed;
 Safari/WebKit and the authenticated backend save/print workflow still need
 integration tests. See `VERIFICATION.md` for the tested scenarios and limits.
-
-`MASTER_PROMPT.md` contains the implementation/verification prompt used for the
-latest pass and can guide subsequent work without assuming full Word parity.
