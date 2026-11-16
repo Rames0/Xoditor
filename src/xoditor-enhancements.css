@@ -1,0 +1,545 @@
+.xoditor .custom-table-tools, .xoditor .custom-find-dialog {
+    display:flex;flex-wrap:wrap;gap:5px;padding:6px;background:#f4f6f8;border-bottom:1px solid #ccd3da;
+}
+.xoditor .custom-table-tools[hidden] { display:none; }
+.xoditor .custom-table-tools button, .xoditor .custom-find-dialog button {
+    padding:4px 8px;border:1px solid #bbc5cf;background:white;border-radius:3px;color:#222;
+}
+.xoditor .custom-table-tools span {font-size:12px;align-self:center;}
+.xoditor .custom-table-tools input[type=number] {width:50px;}
+.xoditor .xoditor-notice {padding:6px;color:#6b4500;background:#fff3cc;}
+.xoditor .custom-page-dialog {display:flex;flex-wrap:wrap;gap:8px;padding:12px;background:#eef4fa;}
+.xoditor .custom-page-dialog label {display:flex;align-items:center;gap:4px;}
+.xoditor .custom-page-dialog input {width:60px;}
+.xoditor .editor-content table {width:100%;max-width:100%;border-collapse:collapse;table-layout:fixed;}
+/* Render common legacy and Bootstrap table borders without changing the document HTML. */
+.xoditor .editor-content table.table-bordered,
+.xoditor .editor-content table[border]:not([border="0"]):not([border=""]) {border:1px solid #000;}
+.xoditor .editor-content table.table-bordered > :is(thead,tbody,tfoot) > tr > :is(th,td),
+.xoditor .editor-content table.table-bordered > tr > :is(th,td),
+.xoditor .editor-content table[border]:not([border="0"]):not([border=""]) > :is(thead,tbody,tfoot) > tr > :is(th,td),
+.xoditor .editor-content table[border]:not([border="0"]):not([border=""]) > tr > :is(th,td) {border:1px solid #000;}
+.xoditor .editor-content figure {margin:0;max-width:100%;box-sizing:border-box;}
+.xoditor .editor-content td, .xoditor .editor-content th {overflow-wrap:anywhere;}
+.xoditor .editor-content .selected-cell {outline:2px solid #2681c5;outline-offset:-2px;}
+.xoditor .editor-content img {max-width:100%;border:0;border-radius:0;transform:none;transition:none;}
+.xoditor .editor-content img:hover {outline:1px solid #2681c5;transform:none;box-shadow:none;}
+.xoditor .editor-content .page-break {border-top:1px dashed #aaa;margin:12px 0;}
+.xoditor .editor-content:focus-visible {outline:2px solid #2681c5;outline-offset:-2px;}
+.xoditor .word-toolbar-btn {min-width:28px;font-size:12px;}
+.xoditor .editor-toolbar {gap:4px;padding:8px;background:#f5f7fa;}
+.xoditor .editor-toolbar .word-toolbar-btn,
+.xoditor .editor-toolbar .word-dropdown-btn {
+    height:34px;min-width:34px;margin:0;padding:6px 8px;border:1px solid transparent;
+    border-radius:5px;background:transparent;color:#263548;box-sizing:border-box;
+    display:inline-flex;align-items:center;justify-content:center;gap:6px;line-height:1;
+}
+.xoditor .editor-toolbar .word-toolbar-btn:hover,
+.xoditor .editor-toolbar .word-dropdown-btn:hover {background:#e3eaf4;border-color:#c8d5e6;}
+.xoditor .editor-toolbar .word-toolbar-btn.active {background:#d8e8fb;border-color:#83afe0;color:#154f91;}
+.xoditor button:focus-visible,.xoditor select:focus-visible {outline:2px solid #2681c5;outline-offset:2px;}
+.xoditor button:disabled {opacity:.45;cursor:not-allowed;}
+.xoditor .custom-tool-icon {display:block;flex:0 0 auto;pointer-events:none;}
+.xoditor .editor-toolbar .custom-labeled-tool {width:auto;white-space:nowrap;font-size:12px;}
+.xoditor .custom-table-tools button {margin:0;line-height:1.3;min-height:30px;}
+.xoditor .word-dropdown-item {display:flex;align-items:center;gap:6px;}
+.xoditor .custom-line-spacing {display:inline-flex;align-items:center;gap:6px;margin:0;padding:3px 6px;height:34px;box-sizing:border-box;border:1px solid #c8d5e6;border-radius:5px;color:#263548;}
+.xoditor .custom-line-spacing select {background:transparent;border:0;color:inherit;min-height:26px;}
+.xoditor .editor-toolbar .font-dropdown {width:260px;min-width:260px;flex:0 0 260px;}
+.xoditor .editor-toolbar .font-dropdown .word-dropdown-btn {width:260px;min-width:260px;max-width:260px;justify-content:space-between;}
+.xoditor .editor-toolbar .size-dropdown {width:90px;min-width:90px;flex:0 0 90px;}
+.xoditor .editor-toolbar .size-dropdown .word-dropdown-btn {width:90px!important;min-width:90px!important;max-width:90px!important;justify-content:space-between;}
+.xoditor .font-dropdown .dropdown-text {min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.xoditor .font-dropdown .font-menu {min-width:260px;max-width:calc(100vw - 32px);}
+.xoditor .size-item .size-value {font-size:14px;line-height:1.4;}
+@media(max-width:600px){.xoditor .editor-toolbar{padding:6px;gap:3px;}.xoditor .editor-toolbar .word-toolbar-btn{min-width:36px;height:36px;}}
+.xoditor .editor-content .row {margin-left:0;margin-right:0;}
+.xoditor.fullscreen-mode {z-index:21000;}
+@media print {.xoditor .editor-content .selected-cell {outline:none;}}
+.xoditor .custom-code-panel {display:flex;flex-direction:column;flex:1 1 auto;min-height:0;width:100%;box-sizing:border-box;position:relative;background:#fdfdff;}
+.xoditor .custom-code-tools {display:flex;gap:6px;flex-wrap:wrap;padding:6px;background:#e9eef4;flex-shrink:0;border-bottom:1px solid #dce3eb;}
+.xoditor .custom-code-tools button {padding:4px 8px;background:white;border:1px solid #bbc5cf;border-radius:3px;}
+.xoditor .custom-code-tools span {margin-left:auto;align-self:center;font-size:12px;}
+.xoditor .custom-symbol-panel {display:flex;flex-wrap:wrap;gap:5px;padding:8px;background:#eef4fa;}
+.xoditor .custom-symbol-panel button {min-width:30px;padding:5px;border:1px solid #bbc5cf;background:white;}
+.xoditor .custom-code-panel .CodeMirror {font-family:Consolas,Monaco,monospace;font-size:14px;line-height:1.5;background:#fdfdff;color:#243447;width:100%;box-sizing:border-box;}
+.xoditor.auto-height .custom-code-panel .CodeMirror,
+.xoditor[data-auto-height="true"] .custom-code-panel .CodeMirror,
+.xoditor .custom-code-panel.auto-height .CodeMirror {height:auto!important;}
+.xoditor.auto-height .custom-code-panel .CodeMirror-scroll,
+.xoditor[data-auto-height="true"] .custom-code-panel .CodeMirror-scroll,
+.xoditor .custom-code-panel.auto-height .CodeMirror-scroll {height:auto!important;min-height:inherit;overflow-y:hidden;overflow-x:auto;}
+.xoditor.flex-fill .custom-code-panel,
+.xoditor .custom-code-panel.flex-fill {flex:1 1 0!important;min-height:0!important;height:auto!important;overflow:hidden!important;}
+.xoditor.flex-fill .custom-code-panel .CodeMirror,
+.xoditor .custom-code-panel.flex-fill .CodeMirror {flex:1 1 0!important;min-height:0!important;height:100%!important;}
+.xoditor.flex-fill .custom-code-panel .CodeMirror-scroll,
+.xoditor .custom-code-panel.flex-fill .CodeMirror-scroll {min-height:0!important;height:100%!important;overflow-y:auto!important;}
+.xoditor .custom-code-panel .cm-tag {color:#a31515;}
+.xoditor .custom-code-panel .cm-bracket {color:#536579;}
+.xoditor .custom-code-panel .cm-attribute {color:#795e26;}
+.xoditor .custom-code-panel .cm-string {color:#007a39;}
+.xoditor .custom-code-panel .cm-comment {color:#6a737d;font-style:italic;}
+.xoditor .custom-code-panel .cm-keyword {color:#7c3eaa;}
+.xoditor .custom-code-panel .CodeMirror-matchingtag,
+.xoditor .custom-code-panel .CodeMirror-matchingtag span {color:#005fcc!important;background:transparent!important;outline:none!important;border:0!important;box-shadow:none!important;text-decoration:none!important;font-weight:700;}
+.xoditor .custom-code-panel .CodeMirror-gutters {background:#edf1f6;color:#637588;border-right:1px solid #ccd3da;}
+.xoditor .custom-code-panel .CodeMirror-foldgutter {width:18px;}
+.xoditor .custom-code-panel .CodeMirror-foldmarker {background:#e8eefb;color:#244a85;}
+.xoditor .editor-content[hidden] {display:none!important;}
+
+.xoditor .size-dropdown .size-btn .dropdown-text {visibility:hidden;}
+.xoditor .size-dropdown .size-btn {justify-content:flex-end!important;}
+.xoditor .size-dropdown > .custom-size-input {position:absolute;left:3px;top:3px;width:57px;height:28px;margin:0;padding:3px 6px;border:0;border-radius:3px;background:transparent;color:#263548;font-size:14px;box-sizing:border-box;outline:none;}
+.xoditor .size-dropdown > .custom-size-input:focus {background:white;box-shadow:inset 0 0 0 1px #2681c5;}
+.xoditor .size-dropdown .size-menu {min-width:90px;}
+.xoditor .word-dropdown-menu,.xoditor .font-list,.xoditor .size-list {scrollbar-width:none;}
+.xoditor .word-dropdown-menu::-webkit-scrollbar,.xoditor .font-list::-webkit-scrollbar,.xoditor .size-list::-webkit-scrollbar {display:none;width:0;height:0;}
+
+/* Word-style ribbon. Controls keep their original event handlers and selection state. */
+.xoditor .editor-toolbar.word-ribbon {display:block;padding:0;gap:0;background:#f5f7fa;border-bottom:1px solid #cbd5df;}
+.xoditor .ribbon-quick-access {display:flex;align-items:center;gap:4px;padding:4px 12px;background:#edf2f8;border-bottom:1px solid #d9e1eb;min-height:34px;flex-wrap:wrap;}
+.xoditor .ribbon-tabs {display:flex;gap:2px;padding:0 12px;background:#fff;overflow-x:auto;scrollbar-width:none;}
+.xoditor .ribbon-tabs .ribbon-tab {border:0;border-bottom:3px solid transparent;border-radius:0;background:transparent;color:#35465a;font:14px Arial,sans-serif;padding:10px 16px;cursor:pointer;white-space:nowrap;}
+.xoditor .ribbon-tabs .ribbon-tab[aria-selected=true] {border-bottom-color:#185abd;color:#185abd;font-weight:600;}
+.xoditor .ribbon-tabs .ribbon-tab:hover {background:#edf3fc;}
+.xoditor .ribbon-panel {display:flex;align-items:stretch;gap:0;flex-wrap:wrap;padding:8px 6px 0;min-height:36px;}
+.xoditor .ribbon-panel[hidden],.xoditor .ribbon-tab[hidden] {display:none;}
+.xoditor .ribbon-group {display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid #d5dde7;padding:0 10px;margin-bottom:5px;max-width:100%;box-sizing:border-box;}
+.xoditor .ribbon-group:last-child {border-right:0;}
+.xoditor .ribbon-group-controls {display:flex;flex-wrap:wrap;align-content:flex-start;align-items:center;gap:4px;max-width:370px;min-height:70px;}
+.xoditor .ribbon-group-caption {display:none!important;}
+.xoditor .ribbon-group-controls > select {height:30px;border:1px solid #c8d5e6;border-radius:3px;background:white;padding:3px 6px;color:#263548;}
+.xoditor .ribbon-group-controls .font-dropdown,.xoditor .ribbon-group-controls .size-dropdown {background:#fff;border-radius:4px;}
+.xoditor .ribbon-group-controls .custom-labeled-tool {flex-direction:column;height:62px;padding:6px 10px;gap:5px;}
+.xoditor .ribbon-group-controls .custom-labeled-tool svg {width:23px;height:23px;}
+@media(max-width:600px){.xoditor .ribbon-tabs{padding:0 4px;}.xoditor .ribbon-tabs .ribbon-tab{padding:10px;}.xoditor .ribbon-group{padding:0 6px;}.xoditor .ribbon-group-controls{max-width:100%;}.xoditor .ribbon-panel{min-height:36px;}.xoditor .ribbon-group-controls .font-dropdown,.xoditor .ribbon-group-controls .font-dropdown .word-dropdown-btn{width:210px;min-width:210px;max-width:210px;}}
+
+/* Microsoft Word-style Proofing & Spell Check Dialog */
+.xoditor .custom-spelling-dialog {
+    display: flex; flex-direction: column; gap: 10px; padding: 14px 16px;
+    background: #f8fafc; border-bottom: 2px solid #0078d4; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #1e293b; max-width: 580px; box-sizing: border-box;
+}
+.xoditor .custom-spelling-header {
+    display: flex; align-items: center; justify-content: space-between; font-size: 14px; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;
+}
+.xoditor .custom-spelling-close {
+    background: transparent; border: 0; font-size: 16px; color: #64748b; cursor: pointer; padding: 2px 6px; border-radius: 4px;
+}
+.xoditor .custom-spelling-close:hover { background: #e2e8f0; color: #0f172a; }
+.xoditor .custom-spelling-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin-bottom: 4px; }
+.xoditor .custom-spelling-sentence {
+    background: #ffffff; border: 1px solid #cbd5e1; border-radius: 4px; padding: 8px 10px; font-size: 14px; line-height: 1.5; color: #334155;
+}
+.xoditor .custom-spelling-flagged {
+    color: #dc2626; font-weight: 700; text-decoration: underline wavy #dc2626; padding: 0 2px;
+}
+.xoditor .custom-spelling-sugg-list {
+    background: #ffffff; border: 1px solid #cbd5e1; border-radius: 4px; max-height: 120px; overflow-y: auto; padding: 4px 0;
+}
+.xoditor .custom-spelling-sugg-item {
+    padding: 6px 12px; font-size: 14px; cursor: pointer; color: #1e293b; transition: background 0.1s;
+}
+.xoditor .custom-spelling-sugg-item:hover { background: #f1f5f9; }
+.xoditor .custom-spelling-sugg-item.active { background: #0078d4; color: #ffffff; font-weight: 600; }
+.xoditor .custom-spelling-no-sugg { padding: 8px 12px; font-size: 13px; color: #94a3b8; font-style: italic; }
+.xoditor .custom-spelling-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.xoditor .custom-spelling-btn, .xoditor .custom-spelling-btn-primary {
+    padding: 6px 12px; border-radius: 4px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.15s;
+}
+.xoditor .custom-spelling-btn {
+    background: #ffffff; border: 1px solid #cbd5e1; color: #334155;
+}
+.xoditor .custom-spelling-btn:hover { background: #f1f5f9; border-color: #94a3b8; }
+.xoditor .custom-spelling-btn-primary {
+    background: #0078d4; border: 1px solid #006abc; color: #ffffff;
+}
+.xoditor .custom-spelling-btn-primary:hover { background: #106ebe; }
+.xoditor .custom-spelling-complete {
+    display: flex; align-items: center; gap: 8px; font-size: 14px; color: #15803d; font-weight: 500; padding: 10px 0;
+}
+.xoditor .custom-spelling-check-icon { font-size: 18px; font-weight: 700; color: #16a34a; }
+
+/* Right-click spell check context menu */
+.xoditor .custom-spell-context-menu {
+    position: absolute; z-index: 1000; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 6px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.12); padding: 4px 0; min-width: 170px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+.xoditor .custom-spell-context-item {
+    padding: 6px 14px; font-size: 13px; color: #1e293b; cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+}
+.xoditor .custom-spell-context-item:hover { background: #0078d4; color: #ffffff; }
+.xoditor .custom-spell-context-item.sugg { font-weight: 600; }
+.xoditor .custom-spell-context-sep { height: 1px; background: #e2e8f0; margin: 4px 0; }
+.xoditor .editor-content [data-editor-table-guide] {box-shadow:inset 0 0 0 .5px rgba(100,116,139,.3);}
+.xoditor .table-border-status {font-weight:600;color:#536579;padding:4px 8px;background:#e9eef5;border-radius:4px;}
+.xoditor .editor-content [data-editor-table-guide].selected-cell {outline:2px solid #2681c5;outline-offset:-2px;}
+@media print {.xoditor .editor-content [data-editor-table-guide] {outline:none!important;box-shadow:none!important;}}
+.custom-image-resize {position:fixed;z-index:10000;border:1px solid #56a5ff;box-sizing:border-box;pointer-events:none;}
+.custom-image-resize .custom-image-handle {position:absolute;width:6px;height:6px;min-width:0;min-height:0;max-width:6px;max-height:6px;margin:0;padding:0;border:0;border-radius:50%;background:#488fff;box-shadow:none;box-sizing:border-box;pointer-events:auto;transform:translate(-50%,-50%);touch-action:none;appearance:none;line-height:0;font-size:0;}
+.custom-image-handle::after {content:'';position:absolute;inset:-6px;}
+.custom-image-handle.handle-nw,.custom-image-handle.handle-ne,.custom-image-handle.handle-se,.custom-image-handle.handle-sw {border-radius:50%;}
+.custom-image-handle.handle-nw {left:0;top:0;cursor:nwse-resize}.custom-image-handle.handle-n {left:50%;top:0;cursor:ns-resize}.custom-image-handle.handle-ne {left:100%;top:0;cursor:nesw-resize}
+.custom-image-handle.handle-w {left:0;top:50%;cursor:ew-resize}.custom-image-handle.handle-e {left:100%;top:50%;cursor:ew-resize}
+.custom-image-handle.handle-sw {left:0;top:100%;cursor:nesw-resize}.custom-image-handle.handle-s {left:50%;top:100%;cursor:ns-resize}.custom-image-handle.handle-se {left:100%;top:100%;cursor:nwse-resize}
+.custom-image-size {position:absolute;left:3px;bottom:3px;padding:2px 4px;border-radius:3px;background:rgba(30,41,59,.8);color:white;font:10px Arial,sans-serif;white-space:nowrap;}
+@media print {.custom-image-resize {display:none!important;}}
+.xoditor.html-mode .editor-toolbar > :not(.ribbon-quick-access):not([title="HTML Source"]):not([title="Download document HTML"]):not([title="Fullscreen"]) {display:none!important;}
+.xoditor.html-mode .ribbon-quick-access > :not([title="HTML Source"]):not([title="Download document HTML"]) {display:none!important;}
+.xoditor.html-mode .custom-table-tools,
+.xoditor.html-mode .custom-symbol-panel,
+.xoditor.html-mode .custom-page-dialog,
+.xoditor.html-mode .custom-link-dialog,
+.xoditor.html-mode .custom-image-dialog,
+.xoditor.html-mode .color-picker,
+.xoditor.html-mode .table-grid {display:none!important;}
+.xoditor .editor-content {padding:16px 20px;}
+.xoditor .custom-code-panel .CodeMirror-lines {padding:16px 0;}
+.xoditor .custom-code-panel .CodeMirror pre.CodeMirror-line,
+.xoditor .custom-code-panel .CodeMirror pre.CodeMirror-line-like {padding-left:12px;padding-right:16px;}
+
+/* Compact controls share one height across ribbon, table and source tools. */
+.xoditor.sticky-toolbar {overflow:visible;}
+.xoditor.sticky-toolbar > .editor-toolbar {position:sticky;top:var(--editor-sticky-top,0px);z-index:100;}
+@media print {.xoditor.sticky-toolbar > .editor-toolbar {position:static;}}
+.xoditor .editor-toolbar .word-toolbar-btn,
+.xoditor .editor-toolbar .word-dropdown-btn,
+.xoditor .ribbon-group-controls .custom-labeled-tool {
+    height:30px;min-height:30px;min-width:30px;padding:5px;gap:4px;
+    flex-direction:row;line-height:1;box-sizing:border-box;
+}
+.xoditor .editor-toolbar .word-toolbar-btn {width:30px;max-width:30px;flex:0 0 30px;}
+.xoditor .editor-toolbar .custom-labeled-tool > span {display:none;}
+.xoditor .editor-toolbar .custom-tool-icon,
+.xoditor .ribbon-group-controls .custom-labeled-tool svg {width:16px;height:16px;}
+.xoditor .editor-toolbar select,
+.xoditor .custom-line-spacing,
+.xoditor .custom-table-tools button,
+.xoditor .custom-code-tools button {height:30px;min-height:30px;box-sizing:border-box;font-size:12px;}
+.xoditor .custom-line-spacing {padding:0 4px;gap:3px;}
+.xoditor .custom-line-spacing select {height:26px;min-height:26px;}
+.xoditor .size-dropdown > .custom-size-input {top:2px;height:26px;}
+.xoditor .ribbon-quick-access {min-height:30px;padding:3px 8px;gap:3px;}
+.xoditor .ribbon-panel {min-height:36px;padding:5px 4px 0;}
+.xoditor .ribbon-group {padding:0 7px;margin-bottom:3px;}
+.xoditor .ribbon-group-controls {min-height:60px;gap:3px;}
+.xoditor .ribbon-group-caption {display:none!important;}
+.xoditor .custom-table-tools,.xoditor .custom-code-tools {gap:3px;padding:4px;}
+.xoditor .custom-table-tools select {width:auto;min-width:0;max-width:130px;flex:0 0 auto;height:30px;min-height:30px;margin:0;padding:3px 22px 3px 6px;box-sizing:border-box;font-size:12px;line-height:normal;}
+.xoditor .custom-table-tools input {flex:0 0 auto;min-width:0;height:30px;margin:0;box-sizing:border-box;}
+.xoditor .custom-table-tools input[type=color] {width:32px;padding:2px;}
+
+/* Keep the active ribbon tools in one row; narrow screens scroll sideways. */
+.xoditor .ribbon-panel {
+    flex-wrap:nowrap;min-height:0;overflow-x:auto;overflow-y:visible;
+    padding:5px 4px;scrollbar-width:thin;
+}
+.xoditor .ribbon-group {flex:0 0 auto;position:relative;padding-bottom:0;}
+.xoditor .ribbon-group-controls {flex-wrap:nowrap;min-height:30px;max-width:none;}
+.xoditor .ribbon-group-caption {display:none!important;}
+.xoditor .ribbon-panel:has(.word-dropdown-menu.show) {overflow:visible;}
+.xoditor .editor-toolbar:not(.word-ribbon) {flex-wrap:nowrap;overflow-x:auto;}
+.xoditor .custom-table-tools,.xoditor .custom-code-tools {flex-wrap:nowrap;overflow-x:auto;}
+.xoditor .custom-table-tools > *, .xoditor .custom-code-tools > * {flex-shrink:0;white-space:nowrap;}
+.xoditor .editor-toolbar .font-dropdown,
+.xoditor .ribbon-group-controls .font-dropdown {width:180px;min-width:180px;max-width:180px;flex:0 0 180px;}
+.xoditor .editor-toolbar .font-dropdown .word-dropdown-btn,
+.xoditor .ribbon-group-controls .font-dropdown .word-dropdown-btn {width:180px;min-width:180px;max-width:180px;}
+.xoditor .font-dropdown .font-menu {min-width:180px;width:220px;}
+.xoditor .font-dropdown .font-item {padding:5px 8px;min-height:28px;}
+
+/* In-editor link and image dialogs */
+.xoditor .custom-link-dialog,
+.xoditor .custom-image-dialog {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #f4f6f8;
+    border-bottom: 1px solid #ccd3da;
+    font-size: 13px;
+    color: #222;
+}
+.xoditor .custom-link-dialog label,
+.xoditor .custom-image-dialog label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0;
+    font-size: 13px;
+    white-space: nowrap;
+}
+.xoditor .custom-link-dialog input[type="text"],
+.xoditor .custom-link-dialog input[type="url"],
+.xoditor .custom-image-dialog input[type="text"],
+.xoditor .custom-image-dialog input[type="url"] {
+    min-width: 180px;
+    padding: 4px 8px;
+    border: 1px solid #bbc5cf;
+    border-radius: 3px;
+    background: white;
+    font-size: 13px;
+    color: #222;
+}
+.xoditor .custom-link-dialog button,
+.xoditor .custom-image-dialog button,
+.xoditor .custom-image-dialog .custom-image-file-label {
+    padding: 4px 10px;
+    border: 1px solid #bbc5cf;
+    background: white;
+    border-radius: 3px;
+    color: #222;
+    font-size: 13px;
+    cursor: pointer;
+}
+.xoditor .custom-link-dialog button:hover,
+.xoditor .custom-image-dialog button:hover,
+.xoditor .custom-image-dialog .custom-image-file-label:hover {
+    background: #e9eef5;
+}
+.xoditor .custom-link-dialog button.custom-dialog-primary,
+.xoditor .custom-image-dialog button.custom-dialog-primary {
+    background: #0078d4;
+    border-color: #0078d4;
+    color: white;
+}
+.xoditor .custom-link-dialog button.custom-dialog-primary:hover,
+.xoditor .custom-image-dialog button.custom-dialog-primary:hover {
+    background: #0060aa;
+    border-color: #0060aa;
+}
+.xoditor .custom-link-dialog button.custom-dialog-danger {
+    background: #d83b01;
+    border-color: #d83b01;
+    color: white;
+}
+.xoditor .custom-link-dialog button.custom-dialog-danger:hover {
+    background: #b53200;
+    border-color: #b53200;
+}
+
+/* ==========================================================================
+   Comprehensive Cross-Screen Responsiveness (Mobile, Tablet, Desktop, 4K)
+   ========================================================================== */
+.xoditor {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.xoditor .editor-toolbar {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.xoditor .editor-toolbar.word-ribbon {
+    max-width: 100%;
+    overflow-x: clip;
+}
+
+.xoditor .ribbon-tabs {
+    display: flex;
+    gap: 2px;
+    padding: 0 8px;
+    background: #fff;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+}
+.xoditor .ribbon-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.xoditor .ribbon-panel {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding: 5px 4px 0;
+    min-height:36px;
+}
+
+.xoditor .ribbon-group {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-right: 1px solid #d5dde7;
+    padding:0 8px;
+    margin-bottom: 2px;
+    box-sizing: border-box;
+    max-width: none;
+}
+
+.xoditor .ribbon-group-controls {
+    display: flex;
+    flex-wrap: nowrap;
+    align-content: flex-start;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    max-width: none;
+}
+
+.xoditor .editor-content {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.xoditor .editor-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.xoditor .editor-content table {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    .xoditor .editor-toolbar .word-toolbar-btn,
+    .xoditor .editor-toolbar .word-dropdown-btn,
+    .xoditor .ribbon-group-controls .custom-labeled-tool {
+        height: 32px;
+        min-height: 32px;
+        min-width: 32px;
+        padding: 4px 6px;
+    }
+    .xoditor .ribbon-tabs .ribbon-tab {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+    .xoditor .editor-content {
+        padding: 14px 10px !important;
+    }
+    .xoditor .font-dropdown .font-menu {
+        max-width: min(260px, calc(100vw - 20px)) !important;
+        max-height: min(280px, 50dvh) !important;
+    }
+    .xoditor .size-dropdown .size-menu {
+        max-height: min(240px, 45dvh) !important;
+    }
+    .xoditor .custom-link-dialog,
+    .xoditor .custom-image-dialog,
+    .xoditor .custom-find-dialog,
+    .xoditor .custom-page-dialog {
+        padding: 8px 10px;
+        gap: 6px;
+    }
+}
+
+@media (max-width: 600px) {
+    .xoditor .custom-link-dialog,
+    .xoditor .custom-image-dialog {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 8px 10px;
+    }
+    .xoditor .custom-link-dialog label,
+    .xoditor .custom-image-dialog label {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        white-space: normal;
+    }
+    .xoditor .custom-link-dialog input[type="text"],
+    .xoditor .custom-link-dialog input[type="url"],
+    .xoditor .custom-image-dialog input[type="text"],
+    .xoditor .custom-image-dialog input[type="url"] {
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box;
+    }
+    .xoditor .custom-link-dialog label.custom-link-target {
+        flex-direction: row;
+        align-items: center;
+    }
+    .xoditor .custom-link-dialog button,
+    .xoditor .custom-image-dialog button,
+    .xoditor .custom-image-dialog .custom-image-file-label {
+        width: 100%;
+        justify-content: center;
+        min-height: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    .xoditor .ribbon-tabs .ribbon-tab {
+        padding: 6px 9px;
+        font-size: 12px;
+    }
+    .xoditor .ribbon-group {
+        padding:0 5px;
+    }
+    .xoditor .ribbon-group-caption {display:none!important;}
+    .xoditor .editor-content {
+        padding: 10px 8px !important;
+    }
+}
+
+/* Wrap against the editor's width, including editors inside narrow columns. */
+.xoditor .editor-toolbar.word-ribbon,
+.xoditor .editor-toolbar:not(.word-ribbon),
+.xoditor .ribbon-tabs,
+.xoditor .ribbon-panel,
+.xoditor .custom-table-tools,
+.xoditor .custom-code-tools {
+    flex-wrap: wrap;
+    overflow: visible;
+    min-width: 0;
+}
+.xoditor .ribbon-group {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
+}
+.xoditor .ribbon-group-controls {
+    flex-wrap: wrap;
+    min-width: 0;
+    max-width: 100%;
+}
+.xoditor .size-dropdown .size-menu {
+    max-height: min(420px, 65dvh) !important;
+    overflow-y: auto;
+}
+.xoditor .size-dropdown .size-list {
+    max-height: min(400px, 60dvh);
+    overflow-y: auto;
+}
+
+/* Let individual tools share each row instead of wrapping whole ribbon groups. */
+.xoditor .ribbon-panel {
+    align-items: center;
+    gap: 4px;
+    padding: 5px 8px;
+}
+.xoditor .ribbon-panel .ribbon-group,
+.xoditor .ribbon-panel .ribbon-group-controls {
+    display: contents;
+}
+
+/* Keep the line-spacing number and arrow readable in the compact toolbar. */
+.xoditor .custom-line-spacing {flex:0 0 auto;width:auto;min-width:96px;}
+.xoditor .custom-line-spacing > svg {width:16px;height:16px;flex:none;}
+.xoditor .custom-line-spacing select {width:64px;min-width:64px;padding:2px 4px;font-variant-numeric:tabular-nums;}
+
+/* Enter paragraphs use the same line rhythm as wrapped lines by default. */
+.xoditor .editor-content p {margin:0;line-height:inherit;}
+
+.xoditor .custom-find-dialog { flex-shrink:0; align-items:center; gap:8px; }
+.xoditor .custom-find-dialog label { display:flex; align-items:center; gap:6px; margin:0; color:#222; }
+.xoditor .custom-find-dialog input[data-field="find"],
+.xoditor .custom-find-dialog input[data-field="replace"] { display:block; width:220px; max-width:100%; min-width:100px; height:32px; padding:5px 8px; border:1px solid #bbc5cf; border-radius:4px; background:#fff; color:#222; box-sizing:border-box; }
+.xoditor.html-mode .custom-find-dialog { display:flex; }

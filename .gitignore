@@ -1,0 +1,10 @@
+node_modules/
+test-results/
+public/
+.vercel/
+.idea/
+*.iml
+.env
+.env.*
+!.env.example
+*.log

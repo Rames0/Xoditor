@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xoditor - All Tools & Features</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 20px auto; padding: 20px; }
+        h1 { color: #333; text-align: center; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        .icon { font-size: 18px; text-align: center; }
+        .category { background-color: #e3f2fd !important; font-weight: bold; }
+        code { background: #f5f5f5; padding: 2px 4px; border-radius: 3px; }
+    </style>
+    <link rel="stylesheet" href="dist/xoditor.min.css">
+</head>
+<body>
+    <h1>xoditor - Complete Tools & Features Reference</h1>
+    
+    <section aria-label="Word-style ribbon preview">
+        <h2>Word-style ribbon preview</h2>
+        <p>Choose a tab to see its tools. Home contains Font, Paragraph, and Editing groups. Table controls appear when you select a cell.</p>
+        <textarea id="ribbon-preview"><p>Try the ribbon: select this text to change its font, size, or alignment.</p><p>Use Insert for tables and images, and Layout for page settings.</p></textarea>
+    </section>
+    <h2>📋 All Available Tools</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Tool Name</th>
+                <th>Icon</th>
+                <th>Command</th>
+                <th>Description</th>
+                <th>Usage</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="category">
+                <td colspan="5">📝 TEXT FORMATTING</td>
+            </tr>
+            <tr>
+                <td><code>bold</code></td>
+                <td class="icon">B</td>
+                <td>bold</td>
+                <td>Make text bold</td>
+                <td>Select text and click or Ctrl+B</td>
+            </tr>
+            <tr>
+                <td><code>italic</code></td>
+                <td class="icon">I</td>
+                <td>italic</td>
+                <td>Make text italic</td>
+                <td>Select text and click or Ctrl+I</td>
+            </tr>
+            <tr>
+                <td><code>underline</code></td>
+                <td class="icon">U</td>
+                <td>underline</td>
+                <td>Underline text</td>
+                <td>Select text and click or Ctrl+U</td>
+            </tr>
+            <tr>
+                <td><code>strikethrough</code></td>
+                <td class="icon">S</td>
+                <td>strikeThrough</td>
+                <td>Strike through text</td>
+                <td>Select text and click</td>
+            </tr>
+            <tr>
+                <td><code>subscript</code></td>
+                <td class="icon">X₂</td>
+                <td>subscript</td>
+                <td>Make text subscript</td>
+                <td>Select text and click</td>
+            </tr>
+            <tr>
+                <td><code>superscript</code></td>
+                <td class="icon">X²</td>
+                <td>superscript</td>
+                <td>Make text superscript</td>
+                <td>Select text and click</td>
+            </tr>
+            
+            <tr class="category">
+                <td colspan="5">🎨 COLORS & FONTS</td>
+            </tr>
+            <tr>
+                <td><code>fontName</code></td>
+                <td class="icon">📝</td>
+                <td>fontName</td>
+                <td>Change font family</td>
+                <td>Select from dropdown</td>
+            </tr>
+            <tr>
+                <td><code>fontSize</code></td>
+                <td class="icon">🔤</td>
+                <td>fontSize</td>
+                <td>Change font size (1-7)</td>
+                <td>Select from dropdown</td>
+            </tr>
+            <tr>
+                <td><code>foreColor</code></td>
+                <td class="icon">A</td>
+                <td>foreColor</td>
+                <td>Change text color</td>
+                <td>Enter hex color code</td>
+            </tr>
+            <tr>
+                <td><code>backColor</code></td>
+                <td class="icon">🎨</td>
+                <td>backColor</td>
+                <td>Change background color</td>
+                <td>Enter hex color code</td>
+            </tr>
+            
+            <tr class="category">
+                <td colspan="5">📐 ALIGNMENT</td>
+            </tr>
+            <tr>
+                <td><code>justifyLeft</code></td>
+                <td class="icon">⬅</td>
+                <td>justifyLeft</td>
+                <td>Align text left</td>
+                <td>Click to align current paragraph</td>
+            </tr>
+            <tr>
+                <td><code>justifyCenter</code></td>
+                <td class="icon">⬌</td>
+                <td>justifyCenter</td>
+                <td>Center align text</td>
+                <td>Click to center current paragraph</td>
+            </tr>
+            <tr>
+                <td><code>justifyRight</code></td>
+                <td class="icon">➡</td>
+                <td>justifyRight</td>
+                <td>Align text right</td>
+                <td>Click to right align current paragraph</td>
+            </tr>
+            <tr>
+                <td><code>justifyFull</code></td>
+                <td class="icon">⬍</td>
+                <td>justifyFull</td>
+                <td>Justify text</td>
+                <td>Click to justify current paragraph</td>
+            </tr>
+            
+            <tr class="category">
+                <td colspan="5">📋 LISTS & INDENTATION</td>
+            </tr>
+            <tr>
+                <td><code>insertOrderedList</code></td>
+                <td class="icon">1.</td>
+                <td>insertOrderedList</td>
+                <td>Create numbered list</td>
+                <td>Click to create/toggle numbered list</td>
+            </tr>
+            <tr>
+                <td><code>insertUnorderedList</code></td>
+                <td class="icon">•</td>
+                <td>insertUnorderedList</td>
+                <td>Create bullet list</td>
+                <td>Click to create/toggle bullet list</td>
+            </tr>
+            <tr>
+                <td><code>indent</code></td>
+                <td class="icon">➡</td>
+                <td>indent</td>
+                <td>Increase indentation</td>
+                <td>Click to indent current line/selection</td>
+            </tr>
+            <tr>
+                <td><code>outdent</code></td>
+                <td class="icon">⬅</td>
+                <td>outdent</td>
+                <td>Decrease indentation</td>
+                <td>Click to outdent current line/selection</td>
+            </tr>
+            
+            <tr class="category">
+                <td colspan="5">🔗 LINKS & MEDIA</td>
+            </tr>
+            <tr>
+                <td><code>link</code></td>
+                <td class="icon">🔗</td>
+                <td>createLink</td>
+                <td>Insert hyperlink</td>
+                <td>Select text, click, enter URL</td>
+            </tr>
+            <tr>
+                <td><code>unlink</code></td>
+                <td class="icon">🔗</td>
+                <td>unlink</td>
+                <td>Remove hyperlink</td>
+                <td>Place cursor in link and click</td>
+            </tr>
+            <tr>
+                <td><code>image</code></td>
+                <td class="icon">🖼</td>
+                <td>insertImage</td>
+                <td>Insert image</td>
+                <td>Click and enter image URL</td>
+            </tr>
+            
+            <tr class="category">
+                <td colspan="5">📊 TABLES & ELEMENTS</td>
+            </tr>
+            <tr>
+                <td><code>table</code></td>
+                <td class="icon">⊞</td>
+                <td>insertTable</td>
+                <td>Insert table</td>
+                <td>Click, specify rows/columns</td>
+            </tr>
+            <tr>
+                <td><code>hr</code></td>
+                <td class="icon">—</td>
+                <td>insertHorizontalRule</td>
+                <td>Insert horizontal line</td>
+                <td>Click to insert line separator</td>
+            </tr>
+            
+            <tr class="category">
+                <td colspan="5">🔧 UTILITIES</td>
+            </tr>
+            <tr>
+                <td><code>removeFormat</code></td>
+                <td class="icon">🧹</td>
+                <td>removeFormat</td>
+                <td>Clear all formatting</td>
+                <td>Select text and click to remove formatting</td>
+            </tr>
+            <tr>
+                <td><code>undo</code></td>
+                <td class="icon">↶</td>
+                <td>undo</td>
+                <td>Undo last action</td>
+                <td>Click or Ctrl+Z</td>
+            </tr>
+            <tr>
+                <td><code>redo</code></td>
+                <td class="icon">↷</td>
+                <td>redo</td>
+                <td>Redo last undone action</td>
+                <td>Click or Ctrl+Y</td>
+            </tr>
+            <tr>
+                <td><code>selectAll</code></td>
+                <td class="icon">⬜</td>
+                <td>selectAll</td>
+                <td>Select all content</td>
+                <td>Click or Ctrl+A</td>
+            </tr>
+            <tr>
+                <td><code>print</code></td>
+                <td class="icon">🖨</td>
+                <td>print</td>
+                <td>Print document</td>
+                <td>Click or Ctrl+P</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <h2>🔤 Available Fonts</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Font Name</th>
+                <th>Sample Text</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Arial</td><td style="font-family: Arial;">The quick brown fox jumps over the lazy dog</td><td>Sans-serif</td></tr>
+            <tr><td>Helvetica</td><td style="font-family: Helvetica;">The quick brown fox jumps over the lazy dog</td><td>Sans-serif</td></tr>
+            <tr><td>Times New Roman</td><td style="font-family: 'Times New Roman';">The quick brown fox jumps over the lazy dog</td><td>Serif</td></tr>
+            <tr><td>Courier New</td><td style="font-family: 'Courier New';">The quick brown fox jumps over the lazy dog</td><td>Monospace</td></tr>
+            <tr><td>Verdana</td><td style="font-family: Verdana;">The quick brown fox jumps over the lazy dog</td><td>Sans-serif</td></tr>
+            <tr><td>Georgia</td><td style="font-family: Georgia;">The quick brown fox jumps over the lazy dog</td><td>Serif</td></tr>
+            <tr><td>Palatino</td><td style="font-family: Palatino;">The quick brown fox jumps over the lazy dog</td><td>Serif</td></tr>
+            <tr><td>Garamond</td><td style="font-family: Garamond;">The quick brown fox jumps over the lazy dog</td><td>Serif</td></tr>
+            <tr><td>Bookman</td><td style="font-family: Bookman;">The quick brown fox jumps over the lazy dog</td><td>Serif</td></tr>
+            <tr><td>Comic Sans MS</td><td style="font-family: 'Comic Sans MS';">The quick brown fox jumps over the lazy dog</td><td>Casual</td></tr>
+            <tr><td>Trebuchet MS</td><td style="font-family: 'Trebuchet MS';">The quick brown fox jumps over the lazy dog</td><td>Sans-serif</td></tr>
+            <tr><td>Arial Black</td><td style="font-family: 'Arial Black';">The quick brown fox jumps over the lazy dog</td><td>Sans-serif Bold</td></tr>
+            <tr><td>Impact</td><td style="font-family: Impact;">The quick brown fox jumps over the lazy dog</td><td>Sans-serif Condensed</td></tr>
+        </tbody>
+    </table>
+    
+    <h2>⚙️ Configuration Example</h2>
+    <pre><code>const editor = new Xoditor('#editor', {
+    height: '400px',
+    placeholder: 'Start typing...',
+    toolbar: [
+        'fontName', 'fontSize',
+        'bold', 'italic', 'underline', 'strikethrough',
+        'foreColor', 'backColor',
+        'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull',
+        'insertOrderedList', 'insertUnorderedList',
+        'indent', 'outdent',
+        'link', 'unlink', 'image', 'table', 'hr',
+        'removeFormat', 'undo', 'redo', 'selectAll', 'print'
+    ],
+    fonts: ['Arial', 'Helvetica', 'Times New Roman', 'Courier New', 'Verdana']
+});</code></pre>
+<script src="dist/xoditor.min.js"></script>
+<script>window.ribbonPreview = new Xoditor('#ribbon-preview', {autoSave:false, height:'320px'});</script>
+</body>
+</html>

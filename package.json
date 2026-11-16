@@ -1,0 +1,47 @@
+{
+    "name": "xoditor",
+    "version": "1.0.0",
+    "description": "A lightweight rich text editor similar to Jodit",
+    "main": "dist/xoditor.min.js",
+    "files": [
+        "dist/",
+        "src/",
+        "fonts/",
+        "vendor/"
+    ],
+    "scripts": {
+        "build:site": "npm run build && node scripts/build-site.cjs",
+        "build": "node scripts/build-metadata.cjs && node scripts/build-code-tools.cjs && npm run minify-js && npm run minify-css",
+        "minify-js": "terser vendor/codemirror.min.js vendor/prettier-html.min.js src/xoditor.js src/xoditor-enhancements.js -o dist/xoditor.min.js -c -m --comments '/^!/' && node scripts/release-banner.cjs",
+        "minify-css": "cleancss -o dist/xoditor.min.css vendor/codemirror.css src/xoditor.css src/xoditor-enhancements.css && node scripts/release-banner.cjs css",
+        "test": "node tests/browser.test.cjs",
+        "test:all": "node tests/run-matrix.cjs",
+        "test:dist": "node tests/run-matrix.cjs --dist",
+        "check": "node scripts/check.cjs",
+        "verify": "npm run build && node scripts/deploy-gwp.cjs && npm run check && npm run test:all",
+        "deploy:gwp": "npm run build && node scripts/deploy-gwp.cjs"
+    },
+    "keywords": [
+        "editor",
+        "wysiwyg",
+        "rich-text",
+        "contenteditable",
+        "cdn"
+    ],
+    "author": "Ramesh Maharjan (https://rameshmaharjan.info.np)",
+    "homepage": "https://xoditor.rameshmaharjan.info.np",
+    "license": "MIT",
+    "devDependencies": {
+        "clean-css-cli": "^5.0.0",
+        "playwright": "1.58.2",
+        "terser": "^5.0.0"
+    },
+    "cdn": {
+        "js": "dist/xoditor.min.js",
+        "css": "dist/xoditor.min.css"
+    },
+    "dependencies": {
+        "codemirror": "5.65.21",
+        "prettier": "3.8.3"
+    }
+}

@@ -1,0 +1,12 @@
+const fs = require('node:fs');
+const path = require('node:path');
+const root = path.resolve(__dirname, '..');
+const pkg = require(path.join(root, 'package.json'));
+const file = path.join(root, 'src/xoditor.js');
+let source = fs.readFileSync(file, 'utf8');
+source = source.replace(/^\/\*! Xoditor[\s\S]*?\*\/\s*/, '');
+const banner = `/*! Xoditor v${pkg.version} | Open-source rich text editor\n * Copyright (c) 2026 Ramesh Maharjan\n * ${pkg.homepage}\n * Released under the MIT License. See LICENSE.\n * Bundled third-party libraries retain their respective licenses.\n */\n`;
+const metadata = `    // BEGIN GENERATED METADATA\n    static get version() { return ${JSON.stringify(pkg.version)}; }\n    static get author() { return 'Ramesh Maharjan'; }\n    static get license() { return ${JSON.stringify(pkg.license)}; }\n    static get homepage() { return ${JSON.stringify(pkg.homepage)}; }\n    // END GENERATED METADATA\n`;
+source = source.replace(/    \/\/ BEGIN GENERATED METADATA[\s\S]*?    \/\/ END GENERATED METADATA\n/, '');
+source = source.replace('class Xoditor {\n', 'class Xoditor {\n' + metadata);
+fs.writeFileSync(file, banner + source);
