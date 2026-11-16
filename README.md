@@ -119,7 +119,7 @@ editing, find/replace, independent instances and the modal adapter lifecycle.
 This is not a complete Microsoft Word implementation. Word pagination, floating
 objects, equations, complex multilevel lists and embedded images absent from the
 browser clipboard are not guaranteed to transfer exactly. Test representative
-letters and their printed output before extending the rollout beyond Darta.
+letters and their printed output before extending the rollout beyond.
 
 Row/column edits, merging/splitting and border ranges use a logical cell grid
 for tested rowspan/colspan layouts. Resizing a table with merged cells remains
