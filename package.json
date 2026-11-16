@@ -1,7 +1,7 @@
 {
     "name": "xoditor",
     "version": "1.0.0",
-    "description": "A lightweight rich text editor similar to Jodit",
+    "description": "A lightweight rich text editor",
     "main": "dist/xoditor.min.js",
     "files": [
         "dist/",
