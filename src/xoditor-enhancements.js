@@ -313,11 +313,11 @@
             tools.forEach(tool => {
                 const title = tool.title || '', label = tool.getAttribute('aria-label');
                 let group = 'Home:Font';
-                if (/^(Undo|Redo|Print|Download document)/.test(title) || title === 'HTML Source') {
-                    if (title === 'HTML Source') {
+                if (/^(Undo|Redo|Print|Download document)/.test(title) || title === 'Edit HTML') {
+                    if (title === 'Edit HTML') {
                         tool.classList.add('custom-labeled-tool');
                         const caption = document.createElement('span');
-                        caption.textContent = 'HTML Source';
+                        caption.textContent = 'Edit HTML';
                         tool.appendChild(caption);
                     }
                     quick.appendChild(tool);
@@ -335,7 +335,7 @@
                 else if (/Align|Center|Justify|List|Indent/.test(title) || label === 'Paragraph style' || tool.classList.contains('custom-line-spacing')) group = 'Home:Paragraph';
                 groups[group].appendChild(tool);
             });
-            const sourceButton = quick.querySelector('[title="HTML Source"]'),
+            const sourceButton = quick.querySelector('[title="Edit HTML"]'),
                 downloadButton = quick.querySelector('[title="Download document HTML"]');
             if (sourceButton && downloadButton) downloadButton.after(sourceButton);
             this.ribbonTabs.forEach(({panel, tab}) => {

@@ -1017,8 +1017,8 @@ function resolveChromiumExecutable() {
     await check('Word ribbon groups tools, switches accessible tabs and keeps commands working', async () => {
         await page.evaluate(()=>{const field=document.createElement('textarea');field.id='ribbon-test';field.value='<p>Ribbon text</p>';document.body.appendChild(field);window.ribbonEditor=new Xoditor(field,{autoSave:false});});
         const ribbon=page.locator('.word-ribbon').last();
-        assert(await ribbon.locator('.ribbon-quick-access').getByRole('button',{name:'HTML Source',exact:true}).isVisible());
-        assert.equal(await ribbon.locator('[role="tabpanel"] [title="HTML Source"]').count(),0);
+        assert(await ribbon.locator('.ribbon-quick-access').getByRole('button',{name:'Edit HTML',exact:true}).isVisible());
+        assert.equal(await ribbon.locator('[role="tabpanel"] [title="Edit HTML"]').count(),0);
         assert.equal(await ribbon.locator('[role="tab"]').count(),6);assert.equal(await ribbon.locator('[role="tabpanel"]:visible').count(),1);
         assert.equal(await ribbon.locator('[role="tab"][aria-selected="true"]').textContent(),'Home');
         await ribbon.getByRole('tab',{name:'Insert',exact:true}).click();assert(await ribbon.getByRole('button',{name:'Insert Table',exact:true}).isVisible());
@@ -1116,6 +1116,31 @@ function resolveChromiumExecutable() {
         const result=await page.evaluate(() => {editor.destroy();editor.destroy();return {value:document.querySelector('#first').value,display:document.querySelector('#first').style.display,submits,remaining:document.querySelectorAll('.xoditor').length};});
         assert.match(result.value,/After source/);assert.equal(result.display,'');assert.equal(result.submits,0);assert.equal(result.remaining,1);
     });
+    await check('Custom cell padding survives reselection, export and undo/redo', async () => {
+        const result = await page.evaluate(() => {
+            const host = document.createElement('textarea'); document.body.appendChild(host);
+            const ed = new Xoditor(host, {autoSave:false});
+            ed.setContent('<table><tbody><tr><td>पहिलो</td><td>Second</td></tr></tbody></table>');
+            ed.selectCell(ed.editor.querySelector('td'), false);
+            ed.applyTablePadding('8 12 16 20');
+            const applied = ed.editor.querySelector('td').style.padding;
+            ed.selectCell(ed.editor.querySelectorAll('td')[1], false);
+            ed.selectCell(ed.editor.querySelector('td'), false);
+            const restored = ed.tablePaddingInput.value;
+            const html = ed.getContent();
+            ed.performUndo(); const undone = ed.editor.querySelector('td').style.padding;
+            ed.performRedo(); const redone = ed.editor.querySelector('td').style.padding;
+            ed.setContent(html); const loaded = ed.editor.querySelector('td').style.padding;
+            ed.destroy(); host.remove(); return {applied,restored,undone,redone,loaded};
+        });
+        assert.equal(result.applied,'8px 12px 16px 20px');
+        assert.equal(result.restored,'8 12 16 20');
+        assert.equal(result.undone,'');
+        assert.equal(result.redone,result.applied);
+        assert.equal(result.loaded,result.applied);
+    });
+
+    if (fs.existsSync(path.resolve(root,'../gwp_front/js/xoditor.js'))) {
     await page.addScriptTag({path:path.resolve(root,'../gwp_front/js/xoditor.js')});
     await page.addScriptTag({path:path.resolve(root,'../gwp_front/js/sunEditor.js')});
     await check('Darta adapter recreates modal editors and preserves host save/load API', async () => {
@@ -1128,6 +1153,7 @@ function resolveChromiumExecutable() {
         });
         assert.equal(result.value,'<p>Modal content</p>');assert.equal(result.readOnly,'false');assert.equal(result.reopenedValue,result.value);
     });
+    }
     assert.deepEqual(errors,[]);
     await browser.close();
     console.log('All browser checks passed in ' + engine + '.');

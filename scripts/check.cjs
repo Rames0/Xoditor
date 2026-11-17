@@ -9,7 +9,7 @@ JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));JSON.parse(fs
 const vendor=path.resolve(root,'../gwp_front/js/vendor/xoditor');
 const hash=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 let checked=0;
-for(const directory of ['dist'])for(const name of fs.readdirSync(path.join(root,directory))){
+if(process.argv.includes('--deployed')) for(const directory of ['dist'])for(const name of fs.readdirSync(path.join(root,directory))){
     const source=path.join(root,directory,name);if(!fs.statSync(source).isFile())continue;
     const deployed=path.join(vendor,directory,name);
     if(!fs.existsSync(deployed)||hash(source)!==hash(deployed))throw new Error('Deployed asset mismatch: '+directory+'/'+name);checked++;

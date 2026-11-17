@@ -18,8 +18,10 @@
         "test:all": "node tests/run-matrix.cjs",
         "test:dist": "node tests/run-matrix.cjs --dist",
         "check": "node scripts/check.cjs",
-        "verify": "npm run build && node scripts/deploy-gwp.cjs && npm run check && npm run test:all",
-        "deploy:gwp": "npm run build && node scripts/deploy-gwp.cjs"
+        "verify": "npm run build:site && npm run check && npm run test:all && npm run test:document",
+        "deploy:gwp": "npm run build && node scripts/deploy-gwp.cjs",
+        "check:deployed": "node scripts/check.cjs --deployed",
+        "test:document": "node tests/document-regression.cjs"
     },
     "keywords": [
         "editor",

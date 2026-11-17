@@ -131,3 +131,19 @@ The current formatting commands rely partly on the browser's legacy
 `execCommand` implementation. Chromium and Firefox regression checks passed;
 Safari/WebKit and the authenticated backend save/print workflow still need
 integration tests. See `VERIFICATION.md` for the tested scenarios and limits.
+
+## Quality checks
+
+Run `npm ci`, then `npx playwright install --with-deps chromium firefox webkit`.
+`npm run verify` builds the static site, checks JavaScript and package files,
+executes source and minified editor regressions, and tests the document playground.
+It does not copy files into another application or publish a deployment.
+
+Use `TEST_BROWSERS=chromium,firefox,webkit npm run test:all` to require all three
+browser engines. Reports are written to `test-results/verification.json`.
+GitHub Actions runs this browser matrix for pushes and pull requests and uploads
+its verification report. A locally passing Chromium run does not establish
+Firefox or WebKit compatibility; check each engine's result before a release.
+
+When working inside GWP, `npm run check:deployed` additionally verifies the copied
+assets. GWP adapter tests run only when that neighboring application is present.
