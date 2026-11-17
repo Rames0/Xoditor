@@ -227,6 +227,16 @@
                 button.onclick = () => this.applyCellBorders(side);
                 this.tableTools.appendChild(button);
             });
+            const borderGroup = document.createElement('div');
+            borderGroup.className = 'table-border-controls';
+            borderGroup.setAttribute('role', 'group');
+            borderGroup.setAttribute('aria-label', 'Table borders');
+            [borderStyle, borderColor, borderWidth].forEach(control => borderGroup.appendChild(control));
+            ['All borders', 'No borders', ...['outside', 'inside', 'top', 'right', 'bottom', 'left'].map(side => side + ' border')].forEach(label => {
+                const button = Array.from(this.tableTools.querySelectorAll('button')).find(item => item.getAttribute('aria-label') === label);
+                if (button) borderGroup.appendChild(button);
+            });
+            this.tableTools.appendChild(borderGroup);
             this.toolbar.after(this.tableTools);
             if (this.options.ribbon !== false) this.createRibbon();
             if(this.options.bootstrap){
@@ -903,7 +913,8 @@
                 if(!status){status=document.createElement('span');status.className='table-border-status';status.setAttribute('role','status');this.tableTools.prepend(status);}
                 const cells=Array.from(this.activeCell.closest('table').querySelectorAll('td,th')).filter(cell=>cell.closest('table')===this.activeCell.closest('table'));
                 const count=cells.filter(cell=>cell.hasAttribute('data-editor-table-guide')).length;
-                status.textContent=count===cells.length?'No borders · light guides only':count?'Mixed borders':'Borders applied';
+                status.textContent=count===cells.length?'Borders off · guides only':count?'Mixed borders':'Borders on';
+                status.setAttribute('aria-label', 'Table border state: ' + status.textContent);
             }
         },
 
