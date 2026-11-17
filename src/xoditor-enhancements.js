@@ -1961,6 +1961,7 @@ showLinkDialog() {
 
         selectCell(cell, extend) {
             if (cell && !this.editor.contains(cell)) return;
+            this.tableTools.querySelector('.table-action-status')?.remove();
             const anchor = extend ? this.activeCell : null;
             this.editor.querySelectorAll('.selected-cell').forEach(item => item.classList.remove('selected-cell'));
             if (!cell) {
@@ -2083,7 +2084,7 @@ showLinkDialog() {
             };
             if (command === 'merge') {
                 const selected = Array.from(matrix.origins.keys()).filter(item => item.classList.contains('selected-cell'));
-                if (selected.length < 2) return;
+                if (selected.length < 2) { this.tableActionFeedback('Select two or more cells to merge.'); return; }
                 const top = Math.min(...selected.map(item => matrix.origins.get(item).row)),
                     left = Math.min(...selected.map(item => matrix.origins.get(item).col));
                 const bottom = Math.max(...selected.map(item => matrix.origins.get(item).row + matrix.origins.get(item).height - 1)),
@@ -2160,6 +2161,7 @@ showLinkDialog() {
                 this.selectCell(null);
             }
             this.changed();
+            this.tableActionFeedback(({merge:'Cells merged.',split:'Cell split.',rowAbove:'Row inserted above.',rowBelow:'Row inserted below.',deleteRow:'Row deleted.',columnLeft:'Column inserted left.',columnRight:'Column inserted right.',deleteColumn:'Column deleted.'})[command] || 'Table updated.');
         },
 
         editTable(command) {
@@ -2180,12 +2182,20 @@ showLinkDialog() {
                 Array.from(table.rows[0].cells).forEach(item => {
                     const replacement = document.createElement(item.tagName === 'TH' ? 'td' : 'th');
                     Array.from(item.attributes).forEach(attr => replacement.setAttribute(attr.name, attr.value));
+                    if (replacement.tagName === 'TH') replacement.setAttribute('scope', 'col');
+                    else replacement.removeAttribute('scope');
                     replacement.append(...item.childNodes);
                     item.replaceWith(replacement);
                 });
                 this.activeCell = table.rows[0].cells[0];
             }
             this.changed();
+        },
+
+        tableActionFeedback(message) {
+            let status = this.tableTools.querySelector('.table-action-status');
+            if (!status) { status = document.createElement('span'); status.className = 'table-action-status'; status.setAttribute('role', 'status'); this.tableTools.prepend(status); }
+            status.textContent = message;
         },
 
         tableBorderValue() {

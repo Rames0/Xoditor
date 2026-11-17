@@ -2865,9 +2865,9 @@ notify(message) {
     updateWordCount() {
         if (!this.options.wordCount || !this.wordCountDisplay) return;
         
-        const documentText = new DOMParser().parseFromString(this.getContent(), 'text/html');
+        const documentText = new DOMParser().parseFromString(this.getContent().replace(/>\s+</g, '><'), 'text/html');
         documentText.querySelectorAll('script,style,template').forEach(node => node.remove());
-        documentText.querySelectorAll('p,div,li,tr,h1,h2,h3,h4,h5,h6,blockquote,pre,br').forEach(node => node.appendChild(documentText.createTextNode(' ')));
+        documentText.querySelectorAll('p,div,li,tr,td,th,h1,h2,h3,h4,h5,h6,blockquote,pre,br').forEach(node => node.appendChild(documentText.createTextNode(' ')));
         const text = (documentText.body.textContent || '').replace(/[\u200b\ufeff]/g, '').replace(/\s+/g, ' ').trim();
         const words = text.trim() ? text.trim().split(/\s+/).length : 0;
         const characters = text.length;
@@ -2880,9 +2880,9 @@ notify(message) {
     }
 
     showWordCountDialog() {
-        const documentText = new DOMParser().parseFromString(this.getContent(), 'text/html');
+        const documentText = new DOMParser().parseFromString(this.getContent().replace(/>\s+</g, '><'), 'text/html');
         documentText.querySelectorAll('script,style,template').forEach(node => node.remove());
-        documentText.querySelectorAll('p,div,li,tr,h1,h2,h3,h4,h5,h6,blockquote,pre,br').forEach(node => node.appendChild(documentText.createTextNode(' ')));
+        documentText.querySelectorAll('p,div,li,tr,td,th,h1,h2,h3,h4,h5,h6,blockquote,pre,br').forEach(node => node.appendChild(documentText.createTextNode(' ')));
         const text = (documentText.body.textContent || '').replace(/[\u200b\ufeff]/g, '').replace(/\s+/g, ' ').trim();
         const words = text.trim() ? text.trim().split(/\s+/).length : 0;
         const characters = text.length;
