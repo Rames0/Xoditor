@@ -22,3 +22,7 @@ html::-webkit-scrollbar { width: 9px; height: 0; }
 html::-webkit-scrollbar-track { background: #f6f5f0; }
 html::-webkit-scrollbar-thumb { background: #617b43; border: 2px solid #f6f5f0; border-radius: 8px; }
 html::-webkit-scrollbar-thumb:hover { background: #20342c; }
+
+.sample-tabs button,.quiet { color:#384c3d; }
+.sample-tabs button:focus-visible,.quiet:focus-visible { outline:2px solid #44632e; outline-offset:2px; }
+.sample-tabs button[aria-checked=true] { background:#fff; color:#20342c; font-weight:600; }

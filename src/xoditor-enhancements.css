@@ -552,3 +552,8 @@
 .xoditor .table-padding-body input { width:100%!important; min-width:0; height:34px; padding:6px 8px; font:14px Arial,sans-serif; }
 .xoditor .table-padding-body small { font-size:11px; line-height:1.7; white-space:normal; }
 .xoditor .table-padding-body select { width:100%; }
+
+/* Clearer targets and separation within the ribbon. */
+.xoditor .editor-toolbar button { min-width:32px; min-height:34px; }
+.xoditor .ribbon-group { padding-left:10px; padding-right:10px; border-right:1px solid #c5ccd3; margin-right:6px; }
+.xoditor select[aria-label="Paragraph style"] { min-width:125px; }

@@ -263,7 +263,7 @@ class Xoditor {
             image: { icon: '<i class="fa fa-image"></i>', command: 'insertImage', title: 'Insert Image' },
             table: { icon: '<i class="fa fa-table"></i>', command: 'insertTable', title: 'Insert Table' },
             hr: { icon: '<i class="fa fa-minus"></i>', command: 'insertHorizontalRule', title: 'Horizontal Rule' },
-            html: { icon: '<i class="fa fa-code"></i>', command: 'toggleHTML', title: 'HTML Source' },
+            html: { icon: '<i class="fa fa-code"></i>', command: 'toggleHTML', title: 'Edit HTML' },
             removeFormat: { icon: '<i class="fa fa-eraser"></i>', command: 'removeFormat', title: 'Clear Formatting' },
             undo: { icon: '<i class="fa fa-undo"></i>', command: 'undo', title: 'Undo' },
             redo: { icon: '<i class="fa fa-repeat"></i>', command: 'redo', title: 'Redo' },
@@ -271,8 +271,8 @@ class Xoditor {
             print: { icon: '<i class="fa fa-print"></i>', command: 'print', title: 'Print' },
             wordCount: { icon: '<i class="fa fa-calculator"></i>', command: 'showWordCount', title: 'Word Count' },
             spellCheck: { icon: '<i class="fa fa-spell-check"></i>', command: 'toggleSpellCheck', title: 'Toggle Spell Check' },
-            find: { icon: '<i class="fa fa-search"></i>', command: 'showFindReplace', title: 'Find & Replace' },
-            replace: { icon: '<i class="fa fa-exchange"></i>', command: 'showFindReplace', title: 'Find & Replace' },
+            find: { icon: '<i class="fa fa-search"></i>', command: 'showFindReplace', title: 'Find and replace' },
+            
             fullscreen: { icon: '<i class="fa fa-expand"></i>', command: 'toggleFullscreen', title: 'Fullscreen' },
             zoom: { type: 'select', title: 'Zoom', options: ['50%', '75%', '100%', '125%', '150%', '200%'] }
         };
@@ -2865,7 +2865,10 @@ notify(message) {
     updateWordCount() {
         if (!this.options.wordCount || !this.wordCountDisplay) return;
         
-        const text = this.editor.textContent || '';
+        const documentText = new DOMParser().parseFromString(this.getContent(), 'text/html');
+        documentText.querySelectorAll('script,style,template').forEach(node => node.remove());
+        documentText.querySelectorAll('p,div,li,tr,h1,h2,h3,h4,h5,h6,blockquote,pre,br').forEach(node => node.appendChild(documentText.createTextNode(' ')));
+        const text = (documentText.body.textContent || '').replace(/[\u200b\ufeff]/g, '').replace(/\s+/g, ' ').trim();
         const words = text.trim() ? text.trim().split(/\s+/).length : 0;
         const characters = text.length;
         const charactersNoSpaces = text.replace(/\s/g, '').length;
@@ -2877,7 +2880,10 @@ notify(message) {
     }
 
     showWordCountDialog() {
-        const text = this.editor.textContent || '';
+        const documentText = new DOMParser().parseFromString(this.getContent(), 'text/html');
+        documentText.querySelectorAll('script,style,template').forEach(node => node.remove());
+        documentText.querySelectorAll('p,div,li,tr,h1,h2,h3,h4,h5,h6,blockquote,pre,br').forEach(node => node.appendChild(documentText.createTextNode(' ')));
+        const text = (documentText.body.textContent || '').replace(/[\u200b\ufeff]/g, '').replace(/\s+/g, ' ').trim();
         const words = text.trim() ? text.trim().split(/\s+/).length : 0;
         const characters = text.length;
         const charactersNoSpaces = text.replace(/\s/g, '').length;

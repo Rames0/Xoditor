@@ -6,25 +6,30 @@ const samples = {
 };
 const demo = new Xoditor('#live-editor', { height: '500px', defaultFont: 'Arial', defaultFontSize: '16px', autoSave: false, stickyToolbar: false, ribbon: true, onChange: () => { if (!document.getElementById('html-output').hidden) updateOutput(); } });
 let currentSample = 'brief';
+let loadedContent = '';
+const drafts = new Map();
 function updateOutput() { document.getElementById('output-code').textContent = demo.getContent(); }
 function loadSample(key) {
+    if (loadedContent) drafts.set(currentSample, demo.getContent());
     currentSample = key;
-    demo.setContent(samples[key]);
+    demo.setContent(drafts.get(key) || samples[key]);
+    loadedContent = demo.getContent();
     document.querySelectorAll('[data-sample]').forEach(button => {
         const selected = button.dataset.sample === key;
         button.classList.toggle('selected', selected);
-        button.setAttribute('aria-pressed', String(selected));
+        button.setAttribute('aria-checked', String(selected));
+        button.tabIndex = selected ? 0 : -1;
     });
-    document.getElementById('demo-status').textContent = 'Sample loaded. Switching samples replaces the current demo content.';
+    document.getElementById('demo-status').textContent = 'Sample loaded. Your edits are kept when switching samples during this visit.';
     updateOutput();
 }
 loadSample(currentSample);
 document.querySelectorAll('[data-sample]').forEach(button => button.addEventListener('click', () => loadSample(button.dataset.sample)));
-document.getElementById('reset-demo').addEventListener('click', () => loadSample(currentSample));
+document.getElementById('reset-demo').addEventListener('click', () => { if (demo.getContent() !== samples[currentSample] && !confirm('Reset this sample and discard its edits?')) return; drafts.delete(currentSample); loadedContent = ''; loadSample(currentSample); });
 document.getElementById('view-output').addEventListener('click', event => {
     const output = document.getElementById('html-output');
     output.hidden = !output.hidden;
-    event.currentTarget.textContent = output.hidden ? 'View HTML output ↗' : 'Hide HTML output ↑';
+    event.currentTarget.textContent = output.hidden ? 'Preview HTML output' : 'Hide HTML preview';
     event.currentTarget.setAttribute('aria-expanded', String(!output.hidden));
     updateOutput();
 });
@@ -46,3 +51,12 @@ licenseLink.href = 'LICENSE';
 licenseLink.textContent = `${Xoditor.license} license`;
 const footerCredit = document.querySelector('.site-footer p');
 footerCredit.append(credits, licenseLink);
+
+document.querySelector('.sample-tabs').addEventListener('keydown', event => {
+ const buttons = [...document.querySelectorAll('[data-sample]')];
+ const index = buttons.indexOf(event.target);
+ if (index < 0 || !['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+ event.preventDefault();
+ const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length - 1 : (index + (event.key === 'ArrowRight' ? 1 : -1) + buttons.length) % buttons.length;
+ loadSample(buttons[next].dataset.sample); buttons[next].focus();
+});

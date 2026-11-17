@@ -109,7 +109,7 @@
             ['p', 'h1', 'h2', 'h3', 'blockquote', 'pre'].forEach(value => {
                 const option = document.createElement('option');
                 option.value = value;
-                option.textContent = value;
+                option.textContent = ({p:'Normal text',h1:'Heading 1',h2:'Heading 2',h3:'Heading 3',blockquote:'Quote',pre:'Preformatted'})[value];
                 heading.appendChild(option);
             });
             heading.addEventListener('change', () => this.execCommand('formatBlock', heading.value));
