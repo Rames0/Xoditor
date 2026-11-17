@@ -2177,6 +2177,7 @@ showLinkDialog() {
 
         editTable(command) {
             if (this.readOnly || this.htmlMode || !this.activeCell?.isConnected) return;
+            this.tableTools.querySelector('.table-action-status')?.remove();
             if (['merge', 'split', 'rowAbove', 'rowBelow', 'deleteRow', 'columnLeft', 'columnRight', 'deleteColumn'].includes(command)) return this.structuralTableEdit(command, this.activeCell);
             const cell = this.activeCell, table = cell.closest('table'), row = cell.parentElement;
             const cells = Array.from(table.querySelectorAll('td,th')).filter(item => item.closest('table') === table);
@@ -2201,6 +2202,7 @@ showLinkDialog() {
                 this.activeCell = table.rows[0].cells[0];
             }
             this.changed();
+            if (command !== 'deleteTable') this.tableActionFeedback(({borders:'All borders applied.',noBorders:'All borders removed.',header:'Header row updated.'})[command] || 'Table updated.');
         },
 
         tableActionFeedback(message) {
@@ -2246,6 +2248,7 @@ showLinkDialog() {
                 }
             });
             this.changed();
+            this.tableActionFeedback(side[0].toUpperCase() + side.slice(1) + ' borders updated.');
         },
 
         showImageResize(image) {
