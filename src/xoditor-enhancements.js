@@ -1430,11 +1430,15 @@
             }
             event.preventDefault();
             const clipboard = event.clipboardData;
+            if (!clipboard) return;
             const html = clipboard.getData('text/html');
             const text = clipboard.getData('text/plain');
             if (this.htmlMode) {
-                document.execCommand('insertText', false, text || html);
-                this.changed();
+                if (this.codeMirror) this.codeMirror.replaceSelection(text || html, 'end', 'paste');
+                else {
+                    document.execCommand('insertText', false, text || html);
+                    this.changed();
+                }
                 return;
             }
             if (html) {
@@ -1468,7 +1472,22 @@
                 if (missing.some(image => !image.hasAttribute('src'))) this.notify('Some Word images were not available from the clipboard. Upload those images separately.');
             } else if (text) {
                 this.restoreSelection();
-                document.execCommand('insertText', false, text);
+                const selection = window.getSelection();
+                if (!selection.rangeCount) return;
+                const range = selection.getRangeAt(0);
+                if (!this.editor.contains(range.commonAncestorContainer)) return;
+                const fragment = document.createDocumentFragment();
+                text.split(/\r\n?|\n/).forEach((line, index) => {
+                    if (index) fragment.appendChild(document.createElement('br'));
+                    fragment.appendChild(document.createTextNode(line));
+                });
+                const last = fragment.lastChild;
+                range.deleteContents();
+                range.insertNode(fragment);
+                range.setStartAfter(last);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
                 this.changed();
             } else {
                 const images = Array.from(clipboard.files || []).filter(file => /^image\//.test(file.type));

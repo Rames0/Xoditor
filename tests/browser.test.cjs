@@ -1127,6 +1127,28 @@ function resolveChromiumExecutable() {
         assert.equal(result.lists,1);assert.equal(result.span,'2');assert.equal(result.headers,2);assert.equal(result.office,false);
     });
 
+    await check('Plain-text paste preserves literal markup, Nepali text, line breaks and undo', async () => {
+        const result = await page.evaluate(async () => {
+            const host = document.createElement('textarea');
+            document.body.appendChild(host);
+            const ed = new Xoditor(host, {autoSave: false});
+            ed.setContent('<p>Before</p>');
+            ed.placeCaret(ed.editor.querySelector('p'));
+            const clipboardData = new DataTransfer();
+            clipboardData.setData('text/plain', '<b>नेपाली</b>\r\nSecond line');
+            await ed.pasteContent(pasteEvent({clipboardData}));
+            const html = ed.getContent();
+            ed.performUndo();
+            const undone = ed.getContent();
+            ed.destroy();
+            host.remove();
+            return {html, undone};
+        });
+        assert.match(result.html, /&lt;b&gt;नेपाली&lt;\/b&gt;/);
+        assert.match(result.html, /<br\s*\/?>Second line/);
+        assert.equal(result.undone, '<p>Before</p>');
+    });
+
     await check('Office document survives paste, table history, source editing, reopen and print', async () => {
         const fixture = fs.readFileSync(path.join(root, 'tests/fixtures/office-nepali.html'), 'utf8');
         const result = await page.evaluate(async html => {
