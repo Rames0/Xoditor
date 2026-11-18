@@ -1116,6 +1116,27 @@ function resolveChromiumExecutable() {
         const result=await page.evaluate(() => {editor.destroy();editor.destroy();return {value:document.querySelector('#first').value,display:document.querySelector('#first').style.display,submits,remaining:document.querySelectorAll('.xoditor').length};});
         assert.match(result.value,/After source/);assert.equal(result.display,'');assert.equal(result.submits,0);assert.equal(result.remaining,1);
     });
+    await check('Saved Office/Nepali fixture preserves lists, merged cells and semantic headers', async () => {
+        const fixture = fs.readFileSync(path.join(root,'tests/fixtures/office-nepali.html'),'utf8');
+        const result = await page.evaluate(html => {
+            const cleaned = editor.sanitizeHtml(html,true);
+            const doc = new DOMParser().parseFromString(cleaned,'text/html');
+            return {text:doc.body.textContent,lists:doc.querySelectorAll('ol ol').length,span:doc.querySelector('[rowspan]').getAttribute('rowspan'),headers:doc.querySelectorAll('th[scope="col"]').length,office:/mso-list|MsoNormal/.test(cleaned)};
+        }, fixture);
+        assert.match(result.text,/रमेश/);assert.match(result.text,/१२३/);
+        assert.equal(result.lists,1);assert.equal(result.span,'2');assert.equal(result.headers,2);assert.equal(result.office,false);
+    });
+
+    await check('Imported HTML rejects executable namespaces, URL tricks and navigation side channels', async () => {
+        const result = await page.evaluate(() => {
+            const html = editor.sanitizeHtml('<svg><a><animate attributeName="href" values="javascript:alert(1)"></animate></a></svg><math><mtext>unsafe</mtext></math><p onclick="alert(1)">नेपाली text</p><a href="java&#x09;script:alert(1)" ping="https://example.com/log">Bad</a><a href="https://example.com" target="_blank">Safe</a><img src="data:image/svg+xml,unsafe" srcset="https://example.com/track 2x">');
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            return {unsafe:doc.querySelectorAll('svg,math,[onclick],[ping],[srcset]').length,bad:doc.querySelector('a').hasAttribute('href'),rel:doc.querySelectorAll('a')[1].rel,text:doc.body.textContent};
+        });
+        assert.equal(result.unsafe,0);assert.equal(result.bad,false);
+        assert.match(result.rel,/noopener/);assert.match(result.text,/नेपाली text/);
+    });
+
     await check('Custom cell padding survives reselection, export and undo/redo', async () => {
         const result = await page.evaluate(() => {
             const host = document.createElement('textarea'); document.body.appendChild(host);

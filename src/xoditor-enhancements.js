@@ -1366,7 +1366,7 @@
                     paragraph.remove();
                 });
             }
-            doc.querySelectorAll('script,iframe,object,embed,link,meta,base,form,input,button,textarea,select').forEach(element => element.remove());
+            doc.querySelectorAll('script,iframe,object,embed,link,meta,base,form,input,button,textarea,select,svg,math').forEach(element => element.remove());
             const comments = document.createTreeWalker(doc.body, NodeFilter.SHOW_COMMENT);
             const toRemove = [];
             while (comments.nextNode()) toRemove.push(comments.currentNode);
@@ -1374,12 +1374,17 @@
             doc.querySelectorAll('*').forEach(element => {
                 Array.from(element.attributes).forEach(attribute => {
                     const name = attribute.name.toLowerCase();
-                    if (name.startsWith('on') || ['srcdoc', 'contenteditable', 'autofocus'].includes(name)) element.removeAttribute(attribute.name);
+                    if (name.startsWith('on') || ['srcdoc', 'contenteditable', 'autofocus', 'ping', 'formaction', 'srcset'].includes(name)) element.removeAttribute(attribute.name);
                     if (['src', 'href', 'xlink:href', 'action'].includes(name)) {
                         const value = attribute.value.replace(/[\u0000-\u0020]+/g, '');
                         if (!this.validateUrl(value) && !(name === 'src' && element.tagName === 'IMG' && this.validateImageUrl(value))) element.removeAttribute(attribute.name);
                     }
                 });
+                if (element.tagName === 'A' && element.getAttribute('target') === '_blank') {
+                    const rel = new Set((element.getAttribute('rel') || '').split(/\s+/).filter(Boolean));
+                    rel.add('noopener'); rel.add('noreferrer');
+                    element.setAttribute('rel', Array.from(rel).join(' '));
+                }
                 Array.from(element.style).forEach(property => {
                     const value = element.style.getPropertyValue(property);
                     if (/expression\s*\(|javascript\s*:|behavior\s*:|-moz-binding/i.test(value) || fromWord && property.startsWith('mso-')) element.style.removeProperty(property);
@@ -2024,7 +2029,9 @@ showLinkDialog() {
                 Array.from(row.cells).forEach(cell => {
                     while (grid[y][x]) x++;
                     const remaining = row.parentElement.rows ? row.parentElement.rows.length - row.sectionRowIndex : table.rows.length - y;
-                    const height = cell.rowSpan === 0 ? remaining : Math.min(cell.rowSpan, remaining);
+                    // Some engines expose rowSpan=1 for a literal rowspan="0".
+                    // Use the HTML attribute for its row-group-to-end semantics.
+                    const height = cell.getAttribute('rowspan')?.trim() === '0' ? remaining : Math.min(cell.rowSpan, remaining);
                     origins.set(cell, {row: y, col: x, height, width: cell.colSpan});
                     for (let dy = 0; dy < height; dy++) {
                         grid[y + dy] ||= [];
