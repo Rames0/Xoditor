@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://xoditor.rameshmaharjan.info.np/sitemap.xml
