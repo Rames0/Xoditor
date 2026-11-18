@@ -44,7 +44,7 @@
         </div>
     </section>
     <h2 id="commands">The tool reference</h2>
-    <div class="reference-scroll">
+    <div class="reference-scroll" tabindex="0" role="region" aria-label="Tool reference table">
         <table class="reference-table">
             <thead>
             <tr>
@@ -286,7 +286,7 @@
     <h2 id="fonts">Find your type.</h2>
     <p class="reference-note">System fonts depend on the fonts installed on your device. Bundled Nepali fonts are
         available in the editor’s font menu.</p>
-    <div class="reference-scroll">
+    <div class="reference-scroll" tabindex="0" role="region" aria-label="Font reference table">
         <table class="reference-table">
             <thead>
             <tr>
@@ -366,7 +366,7 @@
     </div>
 
     <h2 id="configuration">Put it in your application.</h2>
-    <pre><code>const editor = new Xoditor('#editor', {
+    <pre tabindex="0" role="region" aria-label="Editor configuration example"><code>const editor = new Xoditor('#editor', {
     height: '400px',
     placeholder: 'Start typing...',
     toolbar: [

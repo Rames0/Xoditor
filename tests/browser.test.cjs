@@ -1127,6 +1127,39 @@ function resolveChromiumExecutable() {
         assert.equal(result.lists,1);assert.equal(result.span,'2');assert.equal(result.headers,2);assert.equal(result.office,false);
     });
 
+    await check('Long documents preserve their text and table across source mode and reopen', async () => {
+        const result = await page.evaluate(() => {
+            const host = document.createElement('textarea');
+            document.body.appendChild(host);
+            const ed = new Xoditor(host, {autoSave: false, autoFormatSource: false});
+            const text = 'नेपाली र English text in a long document.';
+            const paragraphs = Array.from({length: 600}, (_, i) => `<p>${i + 1}. ${text}</p>`).join('');
+            const table = '<table><tbody><tr><th scope="col">Heading</th></tr><tr><td>Final cell</td></tr></tbody></table>';
+            const start = performance.now();
+            ed.setContent(paragraphs + table);
+            const loaded = performance.now();
+            ed.toggleHTMLMode();
+            ed.toggleHTMLMode();
+            const saved = ed.getContent();
+            ed.setContent(saved);
+            const elapsed = performance.now();
+            const result = {
+                paragraphs: ed.editor.querySelectorAll('p').length,
+                lastParagraph: ed.editor.querySelectorAll('p')[599]?.textContent,
+                finalCell: ed.editor.querySelector('td')?.textContent,
+                loadMs: Math.round(loaded - start),
+                roundTripMs: Math.round(elapsed - loaded)
+            };
+            ed.destroy();
+            host.remove();
+            return result;
+        });
+        assert.equal(result.paragraphs, 600);
+        assert.match(result.lastParagraph, /^600\. नेपाली र English/);
+        assert.equal(result.finalCell, 'Final cell');
+        console.log(`Long document baseline: load ${result.loadMs} ms, HTML round trip and reopen ${result.roundTripMs} ms.`);
+    });
+
     await check('Plain-text paste preserves literal markup, Nepali text, line breaks and undo', async () => {
         const result = await page.evaluate(async () => {
             const host = document.createElement('textarea');
