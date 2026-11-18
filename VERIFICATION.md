@@ -4,11 +4,15 @@ Latest pass: **146 passing scenario runs** (73 checks across Source and 73 check
 
 All checks passed with 0 errors and 0 page exceptions. Test harnesses use automated system browser discovery (`/usr/bin/brave-browser`), allowing one-command headless testing via `npm test` and `npm run verify`.
 
-The implementation pass followed [MASTER_PROMPT.md](MASTER_PROMPT.md). The trial remains limited to GWP's Darta Details page and its editors. Backend records were not created or changed by the tests.
+This document records the October 2026 test pass. For current results, see
+[GitHub Actions](https://github.com/Rames0/Xoditor/actions).
+
+Xoditor is a standalone browser editor. The public deployment is
+[the Xoditor site](https://xoditor.rameshmaharjan.info.np/).
+Standalone verification builds the site and checks the editor in source and
+minified configurations. Host application adapters are optional.
 
 ## Executed checks
-
-`npm run verify` rebuilt JavaScript/CSS, copied dist/fonts to the GWP frontend, checked JavaScript and package files, compared SHA-256 hashes for ten deployed assets, and ran the browser matrix.
 
 | Browser | Source | Built JS/CSS | Result |
 |---|---:|---:|---:|

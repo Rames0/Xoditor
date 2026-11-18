@@ -145,5 +145,6 @@ GitHub Actions runs this browser matrix for pushes and pull requests and uploads
 its verification report. A locally passing Chromium run does not establish
 Firefox or WebKit compatibility; check each engine's result before a release.
 
-When working inside GWP, `npm run check:deployed` additionally verifies the copied
-assets. GWP adapter tests run only when that neighboring application is present.
+Xoditor builds and runs independently. Try the [live editor](https://xoditor.rameshmaharjan.info.np/).
+Applications can embed Xoditor using the [integration guide](docs/INTEGRATION.md).
+The GWP adapter is an optional integration. Its tests run only when that neighboring application is present.
