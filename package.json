@@ -23,7 +23,8 @@
         "deploy:gwp": "npm run build && node scripts/deploy-gwp.cjs",
         "check:deployed": "node scripts/check.cjs --deployed",
         "test:document": "node tests/document-regression.cjs",
-        "test:a11y": "node tests/accessibility.cjs"
+        "test:a11y": "node tests/accessibility.cjs",
+        "test:office-benchmark": "node tests/office-benchmark.cjs"
     },
     "keywords": [
         "editor",
