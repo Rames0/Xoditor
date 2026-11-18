@@ -909,7 +909,7 @@
         changed(isTyping = false) {
             this.updateTableGuides();
             this.saveToUndoStack(isTyping);
-            this.rememberSelection();
+            if (this.rememberSelection() && !this.htmlMode) this.updateToolbarState();
             this.updatePlaceholder();
             this.updateWordCount();
             if (this.element.tagName === 'TEXTAREA') this.element.value = this.getContent();
@@ -1034,12 +1034,39 @@
             this.showFontSizeUnit();
         },
 
+        selectionIsBold(range) {
+            if (range.collapsed) {
+                const node = range.startContainer;
+                return this.isElementBold(node.nodeType === 1 ? node : node.parentElement);
+            }
+            const walker = document.createTreeWalker(range.commonAncestorContainer, NodeFilter.SHOW_TEXT);
+            let node = range.commonAncestorContainer.nodeType === 3 ? range.commonAncestorContainer : walker.nextNode();
+            let hasText = false;
+            while (node) {
+                if (node.length && range.intersectsNode(node) &&
+                    !(node === range.startContainer && range.startOffset === node.length) &&
+                    !(node === range.endContainer && range.endOffset === 0)) {
+                    hasText = true;
+                    if (!this.isElementBold(node.parentElement)) return false;
+                }
+                node = walker.nextNode();
+            }
+            return hasText;
+        },
+
         updateToolbarState() {
             originalUpdateToolbarState.call(this);
             const selection = window.getSelection();
             const node = selection.anchorNode, element = node?.nodeType === 3 ? node.parentElement : node;
-            if (element && this.editor.contains(element)) this.syncTypography(element);
-            else this.showFontSizeUnit();
+            if (element && this.editor.contains(element) && this.editor.contains(selection.focusNode)) {
+                this.syncTypography(element);
+                const button = this.toolbar.querySelector('[title="Bold (Ctrl+B)"]');
+                if (button) {
+                    const active = this.selectionIsBold(selection.getRangeAt(0));
+                    button.classList.toggle('active', active);
+                    button.setAttribute('aria-pressed', String(active));
+                }
+            } else this.showFontSizeUnit();
         },
 
         syncTypography(element) {
@@ -1305,18 +1332,7 @@
             if (command === 'bold' && cells.length <= 1) {
                 const range = window.getSelection().getRangeAt(0);
                 if (!range.collapsed) {
-                    const walker = document.createTreeWalker(this.editor, NodeFilter.SHOW_TEXT);
-                    let hasText = false;
-                    let allBold = true;
-                    while (walker.nextNode()) {
-                        const node = walker.currentNode;
-                        if (!node.length || !range.intersectsNode(node) ||
-                            (node === range.startContainer && range.startOffset === node.length) ||
-                            (node === range.endContainer && range.endOffset === 0)) continue;
-                        hasText = true;
-                        if (!this.isElementBold(node.parentElement)) allBold = false;
-                    }
-                    if (hasText) return this.applyTextStyle('font-weight', allBold ? 'normal' : 'bold');
+                    return this.applyTextStyle('font-weight', this.selectionIsBold(range) ? 'normal' : 'bold');
                 }
             }
             const cellCommands = ['bold', 'italic', 'underline', 'strikeThrough', 'foreColor', 'hiliteColor', 'backColor', 'formatBlock', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'removeFormat'];
@@ -3291,6 +3307,7 @@ showLinkDialog() {
             caret.collapse(true);
             this.savedRange = caret;
             this.restoreSelection();
+            this.updateToolbarState();
             this.undoStack = undo;
             this.redoStack = redo;
             this.lastContent = this.getContent();

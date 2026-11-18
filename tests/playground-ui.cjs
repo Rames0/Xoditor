@@ -135,6 +135,86 @@ const browserPath = process.env.TEST_CHROMIUM_EXECUTABLE || (fs.existsSync('/usr
                 assert((await weight('p', 'target')) >= 600);
             }
         },
+        'bold-input-equivalence': async () => {
+            const fixtures = [
+                {html: '<p>Before target after</p>', block: 'p', expected: 700},
+                {html: '<h2>Before target after</h2>', block: 'h2', expected: 400},
+                {html: '<h2>Before <span style="font-weight: normal">target</span> after</h2>', block: 'h2', expected: 700}
+            ];
+            for (const {html, block, expected} of fixtures) {
+                for (const action of ['keyboard', 'toolbar']) {
+                    await replace(html);
+                    await select(block, 'target');
+                    if (action === 'keyboard') await page.keyboard.press('Control+b');
+                    else await bold.click();
+                    assert.equal(await weight(block, 'target'), expected);
+                    assert.equal(await editor.locator(block).textContent(), 'Before target after');
+                    assert.equal(await bold.getAttribute('aria-pressed'), String(expected >= 600));
+                }
+            }
+        },
+        'partial-heading-bold-keeps-inline-formatting': async () => {
+            await replace('<h2><em><u>Before target after</u></em></h2>');
+            await select('h2', 'target');
+            await bold.click();
+            assert.equal(await weight('h2', 'target'), 400);
+            assert.equal(await weight('h2', 'Before'), 700);
+            assert.equal(await weight('h2', 'after'), 700);
+            assert.equal(await editor.locator('h2 em u').textContent(), 'Before target after');
+            await page.keyboard.press('Control+b');
+            assert.equal(await weight('h2', 'target'), 700);
+        },
+        'heading-bold-after-redo': async () => {
+            await replace('<h2>Shared fixture</h2><p>Fixture paragraph</p>');
+            const heading = editor.locator('h2');
+            await heading.click();
+            const selectLine = async () => {
+                await page.keyboard.press('Home');
+                await page.keyboard.press('Shift+End');
+            };
+            const steps = [];
+            const snapshot = async label => {
+                const result = await heading.evaluate(node => {
+                    const walker = document.createTreeWalker(node, NodeFilter.SHOW_TEXT);
+                    let text;
+                    do { text = walker.nextNode(); } while (text && !text.length);
+                    const button = document.querySelector('[title="Bold (Ctrl+B)"]');
+                    return {
+                        markup: node.outerHTML,
+                        text: node.textContent,
+                        weight: Number(getComputedStyle(text.parentElement).fontWeight),
+                        active: button.classList.contains('active'),
+                        pressed: button.getAttribute('aria-pressed'),
+                        selection: getSelection().toString()
+                    };
+                });
+                steps.push(result);
+                console.log(label, JSON.stringify(result));
+            };
+            await selectLine();
+            await snapshot('selected');
+            await page.keyboard.press('Control+b');
+            await snapshot('Ctrl+B');
+            await page.keyboard.press('Control+z');
+            await snapshot('Undo');
+            await page.keyboard.press('Control+Shift+z');
+            await snapshot('Redo');
+            await selectLine();
+            await snapshot('reselected');
+            await bold.click();
+            await snapshot('first click');
+            assert.equal(steps[5].weight, 700);
+            await bold.click();
+            await snapshot('second click');
+            assert.deepEqual(steps.map(step => step.weight), [700, 400, 700, 400, 400, 700, 400]);
+            assert.deepEqual(steps.map(step => step.active), [true, false, true, false, false, true, false]);
+            assert.deepEqual(steps.map(step => step.pressed), steps.map(step => String(step.active)));
+            assert(steps.every(step => step.text === 'Shared fixture'));
+            assert.equal(await heading.count(), 1);
+            assert.equal(await editor.locator('p').textContent(), 'Fixture paragraph');
+            await editor.locator('p').click();
+            assert.equal(await bold.evaluate(node => node.classList.contains('active')), false);
+        },
         'ribbon-keyboard': async () => {
             await editor.click();
             await select('h2', 'little room');
