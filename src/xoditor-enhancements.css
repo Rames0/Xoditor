@@ -562,3 +562,6 @@
 .xoditor .table-border-controls > * { flex-shrink:0; }
 .xoditor .table-border-status { padding:3px 7px; border-radius:4px; background:#e6ece3; color:#42513e; white-space:nowrap; }
 .xoditor .table-action-status { flex:1 0 100%; color:#263c2c; padding:3px 1px; }
+
+/* Alt+F10 moves focus programmatically, including after pointer selection. */
+.xoditor .ribbon-tab:focus { outline:2px solid #2681c5; outline-offset:-2px; }

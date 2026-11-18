@@ -464,6 +464,23 @@
 
         bindEvents() {
             this.listen(this.container, 'keydown', event => {
+                if (event.altKey && event.key === 'F10' && this.editor.contains(event.target)) {
+                    const target = this.toolbar.querySelector('[role="tab"][aria-selected="true"]')
+                        || this.toolbar.querySelector('button');
+                    if (!target) return;
+                    event.preventDefault();
+                    this.rememberSelection();
+                    target.focus();
+                } else if (event.key === 'Escape' && this.toolbar.contains(event.target) && !this.htmlMode) {
+                    event.preventDefault();
+                    this.restoreSelection();
+                }
+            });
+            this.listen(this.toolbar, 'click', event => {
+                const button = event.target.closest('button[title="Bold (Ctrl+B)"]');
+                if (button && event.detail === 0) button.focus();
+            });
+            this.listen(this.container, 'keydown', event => {
                 if (event.key !== 'Enter' || !event.target.matches('input')) return;
                 event.preventDefault();
                 if (event.target.matches('.custom-size-input,.size-input')) {
@@ -592,6 +609,7 @@
                 }
                 if ((event.ctrlKey || event.metaKey) && ['b', 'i', 'u', 'z', 'y'].includes(event.key.toLowerCase())) {
                     event.preventDefault();
+                    this.rememberSelection();
                     const key = event.key.toLowerCase();
                     this.execCommand(key === 'z' ? (event.shiftKey ? 'redo' : 'undo') : key === 'y' ? 'redo' : {
                         b: 'bold',
@@ -1284,6 +1302,23 @@
                 }
             }
             const cells = this.selectedTableCells();
+            if (command === 'bold' && cells.length <= 1) {
+                const range = window.getSelection().getRangeAt(0);
+                if (!range.collapsed) {
+                    const walker = document.createTreeWalker(this.editor, NodeFilter.SHOW_TEXT);
+                    let hasText = false;
+                    let allBold = true;
+                    while (walker.nextNode()) {
+                        const node = walker.currentNode;
+                        if (!node.length || !range.intersectsNode(node) ||
+                            (node === range.startContainer && range.startOffset === node.length) ||
+                            (node === range.endContainer && range.endOffset === 0)) continue;
+                        hasText = true;
+                        if (!this.isElementBold(node.parentElement)) allBold = false;
+                    }
+                    if (hasText) return this.applyTextStyle('font-weight', allBold ? 'normal' : 'bold');
+                }
+            }
             const cellCommands = ['bold', 'italic', 'underline', 'strikeThrough', 'foreColor', 'hiliteColor', 'backColor', 'formatBlock', 'justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull', 'removeFormat'];
             if (cells.length > 1 && cellCommands.includes(command)) {
                 cells.forEach(cell => {
@@ -1519,6 +1554,46 @@
         insertMarkup(html) {
             if (this.readOnly || this.htmlMode) return;
             this.restoreSelection();
+            const selection = window.getSelection();
+            const range = selection.getRangeAt(0);
+            const template = document.createElement('template');
+            template.innerHTML = html;
+            const blockTags = 'p,h1,h2,h3,h4,h5,h6,ol,ul,table,div,blockquote,pre,figure,hr,section';
+            if (Array.from(template.content.children).some(node => node.matches(blockTags))) {
+                const start = range.startContainer;
+                const block = (start.nodeType === 1 ? start : start.parentElement).closest('p,h1,h2,h3,h4,h5,h6');
+                const hasContent = fragment => Boolean(fragment.textContent.trim() ||
+                    fragment.querySelector('img,table,video,audio,hr'));
+                const before = document.createRange();
+                before.selectNodeContents(this.editor);
+                before.setEnd(range.startContainer, range.startOffset);
+                const after = document.createRange();
+                after.selectNodeContents(this.editor);
+                after.setStart(range.endContainer, range.endOffset);
+                const last = template.content.lastChild;
+                if (!hasContent(before.cloneContents()) && !hasContent(after.cloneContents())) {
+                    this.editor.replaceChildren(template.content);
+                } else if (block && this.editor.contains(block) && block.contains(range.endContainer)) {
+                    const tail = document.createRange();
+                    tail.selectNodeContents(block);
+                    tail.setStart(range.endContainer, range.endOffset);
+                    const trailingBlock = block.cloneNode(false);
+                    trailingBlock.removeAttribute('id');
+                    trailingBlock.appendChild(tail.extractContents());
+                    range.deleteContents();
+                    block.after(template.content);
+                    if (hasContent(trailingBlock)) last.after(trailingBlock);
+                    if (!hasContent(block)) block.remove();
+                }
+                if (last.parentNode && this.editor.contains(last)) {
+                    range.setStartAfter(last);
+                    range.collapse(true);
+                    selection.removeAllRanges();
+                    selection.addRange(range);
+                    this.changed();
+                    return;
+                }
+            }
             document.execCommand('insertHTML', false, html);
             this.changed();
         },
