@@ -1127,6 +1127,74 @@ function resolveChromiumExecutable() {
         assert.equal(result.lists,1);assert.equal(result.span,'2');assert.equal(result.headers,2);assert.equal(result.office,false);
     });
 
+    await check('Office document survives paste, table history, source editing, reopen and print', async () => {
+        const fixture = fs.readFileSync(path.join(root, 'tests/fixtures/office-nepali.html'), 'utf8');
+        const result = await page.evaluate(async html => {
+            const host = document.createElement('textarea');
+            document.body.appendChild(host);
+            const editor = window.fixtureEditor = new Xoditor(host, {autoSave: false, autoFormatSource: false});
+            editor.setContent('<p><br></p>');
+            editor.placeCaret(editor.editor.querySelector('p'));
+            const clipboardData = new DataTransfer();
+            clipboardData.setData('text/html', html);
+            await editor.pasteContent(pasteEvent({clipboardData}));
+
+            const rows = () => editor.editor.querySelector('table').rows.length;
+            const before = rows();
+            editor.selectCell(editor.editor.querySelector('td[rowspan]'), false);
+            editor.editTable('rowBelow');
+            const edited = rows();
+            editor.performUndo();
+            const undone = rows();
+            editor.performRedo();
+            const redone = rows();
+
+            editor.toggleHTMLMode();
+            editor.codeMirror.replaceRange('<p>HTML round trip १२३</p>', {
+                line: editor.codeMirror.lastLine(),
+                ch: editor.codeMirror.getLine(editor.codeMirror.lastLine()).length
+            });
+            editor.toggleHTMLMode();
+            const saved = editor.getContent();
+            editor.setContent(saved);
+            const reopened = editor.getContent();
+
+            window.printedFixture = null;
+            const open = window.open;
+            window.open = function (...args) {
+                const popup = open.apply(this, args);
+                window.fixturePopup = popup;
+                popup.print = () => { window.printedFixture = popup.document.body.innerHTML; };
+                return popup;
+            };
+            try {
+                editor.printContent();
+            } finally {
+                window.open = open;
+            }
+            return {before, edited, undone, redone, saved, reopened};
+        }, fixture);
+        assert.deepEqual([result.before, result.edited, result.undone, result.redone], [3, 4, 3, 4]);
+        for (const html of [result.saved, result.reopened]) {
+            assert.match(html, /रमेश/);
+            assert.match(html, /HTML round trip १२३/);
+            assert.match(html, /rowspan="2"/);
+            assert.match(html, /<th[^>]*scope="col"/);
+            assert.doesNotMatch(html, /mso-list|MsoNormal/);
+        }
+        try {
+            await page.waitForFunction(() => window.printedFixture !== null);
+            assert.match(await page.evaluate(() => window.printedFixture), /HTML round trip १२३/);
+        } finally {
+            await page.evaluate(() => {
+                window.fixturePopup?.close();
+                const host = window.fixtureEditor.element;
+                window.fixtureEditor.destroy();
+                host.remove();
+            });
+        }
+    });
+
     await check('Imported HTML rejects executable namespaces, URL tricks and navigation side channels', async () => {
         const result = await page.evaluate(() => {
             const html = editor.sanitizeHtml('<svg><a><animate attributeName="href" values="javascript:alert(1)"></animate></a></svg><math><mtext>unsafe</mtext></math><p onclick="alert(1)">नेपाली text</p><a href="java&#x09;script:alert(1)" ping="https://example.com/log">Bad</a><a href="https://example.com" target="_blank">Safe</a><img src="data:image/svg+xml,unsafe" srcset="https://example.com/track 2x">');
