@@ -45,3 +45,29 @@ considered verified until its complete run passes. IME and Nepali editing scenar
 are included. Several formatting commands still use `document.execCommand`.
 Replacing that engine requires a separate document-model and transaction design;
 it has not been replaced by this update.
+
+## Browser ES module and plugins
+
+Keep the stylesheet and use the module entry in place of the classic script:
+
+```js
+import Xoditor from './src/index.mjs';
+
+const editor = new Xoditor('#document', {
+    autoSave: false,
+    plugins: [instance => instance.registerCommand('example:signature', ed => {
+        ed.insertMarkup('<p>Regards,</p>');
+    })]
+});
+const unsubscribe = editor.on('change', ({html}) => console.log(html));
+editor.execute('example:signature');
+unsubscribe();
+editor.destroy();
+```
+
+A plugin can return a cleanup function. Commands and subscriptions belong to the
+instance, and duplicate custom command names are rejected. Use a namespaced
+command name to avoid shadowing built-in commands. `execute()` honors read-only
+mode. Plugins are trusted application code. Use `setHTML()` for loading content.
+The `change` event follows the existing `onChange` behavior for edits and
+history operations. Loading a document with `setHTML()` resets history.

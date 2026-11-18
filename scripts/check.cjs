@@ -1,7 +1,7 @@
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {spawnSync}=require('node:child_process');
 const root=path.resolve(__dirname,'..');
-for(const file of ['src/xoditor.js','src/xoditor-enhancements.js','dist/xoditor.min.js','tests/browser.test.cjs','tests/run-matrix.cjs','scripts/deploy-gwp.cjs']){
+for(const file of ['src/index.mjs','src/modules/extensions.mjs','src/xoditor.js','src/xoditor-enhancements.js','dist/xoditor.min.js','tests/browser.test.cjs','tests/run-matrix.cjs','scripts/deploy-gwp.cjs']){
     const result=spawnSync(process.execPath,['--check',path.join(root,file)],{encoding:'utf8'});
     if(result.status!==0)throw new Error('Invalid JavaScript in '+file+'\n'+result.stderr);
 }

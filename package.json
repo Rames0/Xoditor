@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "A lightweight rich text editor",
     "main": "dist/xoditor.min.js",
+    "module": "src/index.mjs",
     "files": [
         "dist/",
         "src/",
@@ -16,6 +17,7 @@
         "minify-js": "terser vendor/codemirror.min.js vendor/prettier-html.min.js src/xoditor.js src/xoditor-enhancements.js -o dist/xoditor.min.js -c -m --comments '/^!/' && node scripts/release-banner.cjs",
         "minify-css": "cleancss -o dist/xoditor.min.css vendor/codemirror.css src/xoditor.css src/xoditor-enhancements.css && node scripts/release-banner.cjs css",
         "test": "node tests/browser.test.cjs",
+        "test:modules": "node tests/extensions.test.mjs && node tests/module-browser.cjs",
         "test:all": "node tests/run-matrix.cjs",
         "test:dist": "node tests/run-matrix.cjs --dist",
         "check": "node scripts/check.cjs",

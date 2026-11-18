@@ -148,3 +148,10 @@ Firefox or WebKit compatibility; check each engine's result before a release.
 Xoditor builds and runs independently. Try the [live editor](https://xoditor.rameshmaharjan.info.np/).
 Applications can embed Xoditor using the [integration guide](docs/INTEGRATION.md).
 The GWP adapter is an optional integration. Its tests run only when that neighboring application is present.
+
+## ES module and Xoditor 2.0 development
+
+Use the browser ES module at `src/index.mjs` for typed integration, custom
+commands, and per-editor plugins. Keep using `dist/xoditor.min.css` for styles.
+See the [integration and plugin guide](docs/INTEGRATION.md) and the
+[2.0 architecture roadmap](docs/2.0-ROADMAP.md).
