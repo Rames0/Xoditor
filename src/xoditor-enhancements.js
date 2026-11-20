@@ -66,6 +66,10 @@
             this.toolbar.querySelectorAll('button[title]').forEach(button => {
                 const label = button.title;
                 button.setAttribute('aria-label', label);
+                if (label === 'Edit HTML') {
+                    button.classList.add('html-mode-toggle');
+                    button.setAttribute('aria-pressed', 'false');
+                }
                 const icon = button.querySelector('i');
                 if (icon) icon.replaceWith(this.toolbarIcon(icon.className));
             });
@@ -2717,6 +2721,7 @@ showLinkDialog() {
             doc.querySelectorAll('style').forEach(style => style.remove());
             this.htmlMode = false;
             this.container.classList.remove('html-mode');
+            this.updateHtmlModeToggle();
             this.editor.style.whiteSpace = '';
             this.editor.innerHTML = doc.body.innerHTML;
             this.normalizeTableStructure(this.editor);
@@ -2877,6 +2882,17 @@ showLinkDialog() {
             this.container.dataset.pageOrientation = layout.orientation;
         },
 
+        updateHtmlModeToggle() {
+            const button = this.toolbar.querySelector('.html-mode-toggle');
+            if (!button) return;
+            const label = this.htmlMode ? 'Preview mode' : 'Edit HTML';
+            button.title = label;
+            button.setAttribute('aria-label', label);
+            button.setAttribute('aria-pressed', String(this.htmlMode));
+            const caption = button.querySelector('span');
+            if (caption) caption.hidden = this.htmlMode;
+        },
+
         toggleHTMLMode() {
             if (this.readOnly) return;
             if (!this.htmlMode) {
@@ -2886,6 +2902,7 @@ showLinkDialog() {
                 this.editor.textContent = html;
                 this.editor.style.whiteSpace = 'pre-wrap';
                 this.container.classList.add('html-mode');
+                this.updateHtmlModeToggle();
                 this.openCodeView(html);
                 if (this.options.autoFormatSource !== false) this.sourceFormattingReady = this.formatSource();
             } else {
@@ -2915,7 +2932,6 @@ showLinkDialog() {
                 item.onclick = action;
                 tools.appendChild(item);
             };
-            button('Visual editor', () => this.toggleHTMLMode());
             button('Undo', () => this.codeMirror.undo());
             button('Redo', () => this.codeMirror.redo());
             button('Format HTML', () => this.formatSource());

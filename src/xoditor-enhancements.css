@@ -36,7 +36,10 @@
 }
 .xoditor .editor-toolbar .word-toolbar-btn:hover,
 .xoditor .editor-toolbar .word-dropdown-btn:hover {background:#e3eaf4;border-color:#c8d5e6;}
-.xoditor .editor-toolbar .word-toolbar-btn.active {background:#d8e8fb;border-color:#83afe0;color:#154f91;}
+.xoditor .editor-toolbar .html-mode-toggle,
+.xoditor .editor-toolbar [title="Download document HTML"] {color:#154f91;}
+.xoditor .editor-toolbar .word-toolbar-btn.active,
+.xoditor .editor-toolbar .html-mode-toggle[aria-pressed="true"] {background:#d8e8fb;border-color:#2681c5;color:#154f91;}
 .xoditor button:focus-visible,.xoditor select:focus-visible {outline:2px solid #2681c5;outline-offset:2px;}
 .xoditor button:disabled {opacity:.45;cursor:not-allowed;}
 .xoditor .custom-tool-icon {display:block;flex:0 0 auto;pointer-events:none;}
@@ -186,8 +189,9 @@
 .custom-image-handle.handle-sw {left:0;top:100%;cursor:nesw-resize}.custom-image-handle.handle-s {left:50%;top:100%;cursor:ns-resize}.custom-image-handle.handle-se {left:100%;top:100%;cursor:nwse-resize}
 .custom-image-size {position:absolute;left:3px;bottom:3px;padding:2px 4px;border-radius:3px;background:rgba(30,41,59,.8);color:white;font:10px Arial,sans-serif;white-space:nowrap;}
 @media print {.custom-image-resize {display:none!important;}}
-.xoditor.html-mode .editor-toolbar > :not(.ribbon-quick-access):not([title="HTML Source"]):not([title="Download document HTML"]):not([title="Fullscreen"]) {display:none!important;}
-.xoditor.html-mode .ribbon-quick-access > :not([title="HTML Source"]):not([title="Download document HTML"]) {display:none!important;}
+.xoditor.html-mode .editor-toolbar > :not(.ribbon-quick-access):not(.html-mode-toggle):not([title="Download document HTML"]):not([title="Fullscreen"]) {display:none!important;}
+.xoditor.html-mode .ribbon-quick-access > :not(.html-mode-toggle):not([title="Download document HTML"]) {display:none!important;}
+.xoditor .html-mode-toggle > span[hidden] {display:none!important;}
 .xoditor.html-mode .custom-table-tools,
 .xoditor.html-mode .custom-symbol-panel,
 .xoditor.html-mode .custom-page-dialog,
