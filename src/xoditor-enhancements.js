@@ -200,7 +200,7 @@
             paddingLabel.textContent = 'Custom padding (px)';
             const padding = document.createElement('input');
             padding.type = 'text';
-            padding.placeholder = '8 12 16 20';
+            padding.placeholder = '4 6 4 6';
             padding.title = 'Padding in pixels: all sides; vertical horizontal; or top right bottom left';
             padding.setAttribute('aria-label', 'Cell padding in pixels');
             paddingLabel.appendChild(padding);
@@ -2049,6 +2049,7 @@ showLinkDialog() {
             for (let row = 0; row < rows; row++) for (let col = 0, tr = body.insertRow(); col < columns; col++) {
                 const cell = tr.insertCell();
                 cell.style.width = 100 / columns + '%';
+                cell.style.padding = '4px 6px';
                 cell.innerHTML = '<br>';
             }
             const range = window.getSelection().getRangeAt(0);

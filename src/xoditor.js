@@ -1548,7 +1548,7 @@ notify(message) {
         for (let i = 0; i < rows; i++) {
             tableHTML += '<tr>';
             for (let j = 0; j < cols; j++) {
-                tableHTML += '<td><br></td>';
+                tableHTML += '<td style="padding: 4px 6px;"><br></td>';
             }
             tableHTML += '</tr>';
         }
