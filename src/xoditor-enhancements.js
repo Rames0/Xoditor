@@ -2044,11 +2044,10 @@ showLinkDialog() {
             this.container.querySelector('.table-grid')?.remove();
             this.restoreSelection();
             const table = document.createElement('table');
-            table.style.cssText = 'border-collapse:collapse;width:100%';
+            table.style.cssText = 'border-collapse:collapse;width:100%;table-layout:fixed';
             const body = table.createTBody();
             for (let row = 0; row < rows; row++) for (let col = 0, tr = body.insertRow(); col < columns; col++) {
                 const cell = tr.insertCell();
-                cell.style.width = 100 / columns + '%';
                 cell.style.padding = '4px 6px';
                 cell.innerHTML = '<br>';
             }
@@ -2494,7 +2493,6 @@ showLinkDialog() {
             if (this.readOnly || this.htmlMode || event.button !== 0) return;
             const target = this.resizeTarget(event);
             if (!target) return;
-            if (target.table && target.axis !== 'y' && Array.from(target.table.rows).some(row => Array.from(row.cells).some(cell => cell.colSpan !== 1 || cell.rowSpan !== 1))) return;
             event.preventDefault();
             const rect = (target.image || target.table).getBoundingClientRect();
             const layoutWidth = (target.image || target.table).offsetWidth;
@@ -2512,19 +2510,49 @@ showLinkDialog() {
                 Array.from(target.table.rows).forEach(row => row.style.height = row.getBoundingClientRect().height / this.dragState.scale + 'px');
                 this.editor.style.cursor = 'ns-resize';
             } else if (target.table) {
-                const cells = Array.from(target.cell.parentElement.cells);
-                this.dragState.columns = cells.map(cell => cell.getBoundingClientRect().width);
-                this.dragState.index = target.cell.cellIndex;
+                const table = target.table;
+                const matrix = this.tableMatrix(table);
+                const position = matrix.origins.get(target.cell);
+                const style = getComputedStyle(table);
+                const spacing = style.borderCollapse === 'collapse' ? 0 :
+                    parseFloat(style.borderSpacing) * this.dragState.scale;
+                // Measure logical boundaries across rows, including merged header cells.
+                const edges = new Array(matrix.width + 1);
+                for (const [cell, origin] of matrix.origins) {
+                    const bounds = cell.getBoundingClientRect();
+                    edges[origin.col] = bounds.left;
+                    edges[origin.col + origin.width] = bounds.right + spacing;
+                }
+                const columns = [];
+                for (let start = 0; start < matrix.width;) {
+                    let end = start + 1;
+                    while (end < matrix.width && edges[end] === undefined) end++;
+                    const width = (edges[end] - edges[start]) / (end - start) - spacing;
+                    while (start < end) {
+                        columns.push(width);
+                        start++;
+                    }
+                }
+                this.dragState.columns = columns;
+                this.dragState.index = position.col + position.width - 1;
+                // Fixed layout needs an explicit table width for intrinsic-width tables.
+                if (!table.style.width || table.style.width === 'auto') table.style.width = style.width;
+                this.dragState.columnWidth = this.dragState.columns.reduce((total, width) => total + width, 0);
                 let group = this.tableColumnGroup(target.table);
                 if (!group) {
                     group = document.createElement('colgroup');
                     target.table.prepend(group);
                 }
-                group.replaceChildren(...cells.map((cell, index) => {
+                group.replaceChildren(...columns.map(width => {
                     const col = document.createElement('col');
-                    col.style.width = this.dragState.columns[index] / rect.width * 100 + '%';
+                    col.style.width = width / this.dragState.columnWidth * 100 + '%';
                     return col;
                 }));
+                // The colgroup owns track widths after a resize, including in saved HTML.
+                for (const cell of matrix.origins.keys()) {
+                    cell.style.removeProperty('width');
+                    cell.removeAttribute('width');
+                }
                 this.dragState.group = group;
                 target.table.style.tableLayout = 'fixed';
             }
@@ -2557,16 +2585,33 @@ showLinkDialog() {
                 const height = Math.max(24, (drag.rowHeight + event.clientY - drag.y) / drag.scale);
                 drag.row.style.height = height + 'px';
                 drag.table.style.height = Math.max(24, drag.height / drag.scale + height - drag.rowHeight / drag.scale) + 'px';
-            } else if (drag.index === drag.columns.length - 1) {
-                const parent = drag.table.parentElement, parentStyle = getComputedStyle(parent);
-                const parentWidth = Math.max(1, parent.getBoundingClientRect().width - (parseFloat(parentStyle.paddingLeft) + parseFloat(parentStyle.paddingRight)) * drag.scale);
-                drag.table.style.width = Math.max(10, Math.min(100, (drag.width + delta) / parentWidth * 100)) + '%';
             } else {
                 const widths = drag.columns.slice();
-                const movement = Math.max(24 - widths[drag.index], Math.min(delta, widths[drag.index + 1] - 24));
+                if (drag.index < widths.length - 1) {
+                    const leftWidth = widths[drag.index];
+                    const rightWidth = widths[drag.index + 1];
+                    const minimum = 24 * drag.scale;
+                    const movement = Math.max(Math.min(leftWidth, minimum) - leftWidth,
+                        Math.min(delta, rightWidth - Math.min(rightWidth, minimum)));
+                    widths[drag.index] += movement;
+                    widths[drag.index + 1] -= movement;
+                    Array.from(drag.group.children).forEach((col, index) => {
+                        col.style.width = widths[index] / drag.columnWidth * 100 + '%';
+                    });
+                    return;
+                }
+                const parent = drag.table.parentElement;
+                const style = getComputedStyle(parent);
+                const parentWidth = Math.max(1, (parent.clientWidth - (parseFloat(style.paddingLeft) || 0) -
+                    (parseFloat(style.paddingRight) || 0)) * drag.scale);
+                const currentWidth = widths[drag.index];
+                const minimum = Math.min(currentWidth, 24 * drag.scale);
+                const availableGrowth = Math.max(0, parentWidth - drag.width);
+                const movement = Math.max(minimum - currentWidth, Math.min(delta, availableGrowth));
+                const total = drag.columnWidth + movement;
                 widths[drag.index] += movement;
-                widths[drag.index + 1] -= movement;
-                Array.from(drag.group.children).forEach((col, index) => col.style.width = widths[index] / drag.width * 100 + '%');
+                drag.table.style.width = (drag.width + movement) / parentWidth * 100 + '%';
+                Array.from(drag.group.children).forEach((col, index) => col.style.width = widths[index] / total * 100 + '%');
             }
         },
 

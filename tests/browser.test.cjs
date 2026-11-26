@@ -347,16 +347,57 @@ function resolveChromiumExecutable() {
         assert.equal(result.targetRow,2);assert.equal(result.rows,1);assert.equal(result.columns,10);
     });
 
+    await check('Six-column grid keeps other dividers fixed after resize and reload', async () => {
+        const cols = [12.2886, 21.0428, 16.6657, 16.6657, 16.6657, 16.6717]
+            .map(width => `<col style="width:${width}%">`).join('');
+        const row = '<tr>' + '<td style="width:16.6667%;padding:4px 6px"><br></td>'.repeat(6) + '</tr>';
+        await page.evaluate(html => editor.setContent(html),
+            `<table style="width:100%;border-collapse:collapse;table-layout:fixed"><colgroup>${cols}</colgroup><tbody>${row.repeat(3)}</tbody></table>`);
+        const cells = page.locator('#xoditor-1 .editor-content tr').first().locator('td');
+        const edges = () => cells.evaluateAll(items => items.map(cell => cell.getBoundingClientRect().right));
+        const before = await edges();
+        const cell = await cells.nth(1).boundingBox();
+        const x = cell.x + cell.width - 1, y = cell.y + cell.height / 2;
+        await page.mouse.move(x, y);
+        await page.mouse.down();
+        await page.mouse.move(x - 30, y);
+        await page.mouse.up();
+        for (const reload of [false, true]) {
+            if (reload) await page.evaluate(() => editor.setContent(editor.getContent()));
+            const after = await edges();
+            after.forEach((edge, i) => assert(Math.abs(edge - before[i] + (i === 1 ? 30 : 0)) < 1));
+            assert.equal(await cells.evaluateAll(items => items.some(cell => cell.style.width)), false);
+        }
+    });
+
     await check('Table column drag and whole-table drag', async () => {
         await page.evaluate(() => {editor.setContent('<table style="width:90%"><tbody><tr><td>A</td><td>B</td><td>C</td></tr></tbody></table>');});
+        const cellWidths=()=>page.locator('#xoditor-1 .editor-content td').evaluateAll(cells=>cells.map(cell=>cell.getBoundingClientRect().width));
+        const before=await cellWidths();
+        const beforeTableWidth=(await page.locator("#xoditor-1 table").boundingBox()).width;
         const first=page.locator('#xoditor-1 .editor-content td').first();
         const box=await first.boundingBox();
         await page.mouse.move(box.x+box.width-2,box.y+box.height/2);await page.mouse.down();await page.mouse.move(box.x+box.width+25,box.y+box.height/2);await page.mouse.up();
         assert.equal(await page.locator('#xoditor-1 col').count(),3);
         const widths=await page.locator('#xoditor-1 col').evaluateAll(cols=>cols.map(col=>parseFloat(col.style.width)));
         assert(widths[0]>widths[1]);
+        const afterDivider=await cellWidths();
+        assert(afterDivider[0]>before[0]);
+        assert(afterDivider[1]<before[1]);
+        assert(Math.abs(afterDivider[2]-before[2])<1);
+        const internal=await first.boundingBox();
+        await page.mouse.move(internal.x+internal.width-2,internal.y+internal.height/2);await page.mouse.down();await page.mouse.move(internal.x+internal.width-35,internal.y+internal.height/2);await page.mouse.up();
+        const afterShrink=await cellWidths();
+        assert(afterShrink[0]<afterDivider[0]);
+        assert(Math.abs((await page.locator("#xoditor-1 table").boundingBox()).width-beforeTableWidth)<1);
+        assert(afterShrink[1]>afterDivider[1]);
+        assert(Math.abs(afterShrink[2]-afterDivider[2])<1);
         const last=await page.locator('#xoditor-1 td').last().boundingBox();
         await page.mouse.move(last.x+last.width-2,last.y+last.height/2);await page.mouse.down();await page.mouse.move(last.x+last.width-70,last.y+last.height/2);await page.mouse.up();
+        const afterEdge=await cellWidths();
+        assert(Math.abs(afterEdge[0]-afterShrink[0])<1);
+        assert(Math.abs(afterEdge[1]-afterShrink[1])<1);
+        assert(afterEdge[2]<afterShrink[2]);
         assert(await page.locator('#xoditor-1 table').evaluate(table=>parseFloat(table.style.width)<90));
     });
 
